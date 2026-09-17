@@ -1,0 +1,100 @@
+/* Halaman cek-in mandiri tamu — dibangun di atas token & komponen catamu.css */
+.ck-page{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.ck-page [hidden]{display:none!important}
+.ck-page .field{font-size:16px;min-height:48px;border-radius:12px;background:var(--surface)}
+.ck-page textarea.field{min-height:96px}
+.ck-page .btn{border-radius:12px;min-height:46px;font-size:14px}
+.ck-page .btn svg{width:18px;height:18px}
+
+.ck-hero{position:relative;padding:28px 20px 96px;color:#fff;background:radial-gradient(70% 120% at 100% 0%,rgba(248,113,113,.45),transparent 60%),linear-gradient(135deg,#b91c1c 0%,#7f1d1d 100%);overflow:hidden}
+.ck-hero::after{content:"";position:absolute;inset:auto -10% -60px -10%;height:120px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.ck-hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.ck-office{display:flex;align-items:center;gap:14px;min-width:0}
+.ck-office-logo{width:56px;height:56px;flex:0 0 56px;border-radius:16px;background:#fff;color:#b91c1c;display:grid;place-items:center;font-size:20px;font-weight:900;box-shadow:0 10px 24px -10px rgba(0,0,0,.45)}
+.ck-office-label{margin:0;font-size:13px;opacity:.82}
+.ck-office h1{margin:2px 0 0;font-size:clamp(22px,4.6vw,30px);line-height:1.15;letter-spacing:-.02em;word-break:break-word}
+.ck-office-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px}
+.ck-office-meta span{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}
+.ck-office-meta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ck-clock{font-weight:800;font-variant-numeric:tabular-nums}
+
+.ck-main{position:relative;z-index:2;flex:1;width:min(760px,100% - 24px);margin:-72px auto 0}
+.ck-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 30px 60px -30px rgba(15,23,42,.35);overflow:hidden}
+.ck-card-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;padding:24px 24px 18px;border-bottom:1px solid var(--line)}
+.ck-card-head h2{margin:0;font-size:22px;letter-spacing:-.01em}
+.ck-card-head p{margin:6px 0 0;color:var(--muted);font-size:13.5px;line-height:1.5;max-width:420px}
+.ck-steps{list-style:none;margin:0;padding:0;display:flex;gap:6px}
+.ck-steps li{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 5px;border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:11.5px;font-weight:800}
+.ck-steps li span{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-size:11px}
+.ck-steps li.is-active{background:var(--primary-soft);color:var(--primary)}
+.ck-steps li.is-active span{background:var(--primary);border-color:var(--primary);color:#fff}
+.ck-steps li.is-done span{background:var(--success);border-color:var(--success);color:#fff}
+
+#ckForm{padding:6px 24px 0}
+.ck-honeypot{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+.ck-section{border:0;margin:0;padding:20px 0;border-bottom:1px dashed var(--line)}
+.ck-section legend{float:left;width:100%;display:flex;align-items:center;gap:10px;padding:0;margin:0 0 14px;font-size:15px;font-weight:800;color:var(--text)}
+.ck-section legend+*{clear:both}
+.ck-section-num{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);font-size:13px}
+.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ck-full{grid-column:1/-1}
+.ck-field label{display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:12.5px;font-weight:800;color:var(--text)}
+.ck-optional{font-size:10.5px;font-weight:700;color:var(--muted);padding:1px 7px;border-radius:999px;background:var(--surface-2)}
+.ck-manual{margin-top:8px}
+.ck-field.has-error .field{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 14%,transparent)}
+.ck-error{margin-top:6px;color:var(--danger);font-size:12px;font-weight:700}
+
+.ck-stepper{display:grid;grid-template-columns:48px 1fr 48px;gap:8px}
+.ck-stepper button{border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:12px;font-size:22px;font-weight:700;cursor:pointer}
+.ck-stepper button:hover{border-color:var(--primary);color:var(--primary)}
+.ck-stepper .field{text-align:center;font-weight:800}
+
+.ck-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ck-media-item{display:grid;gap:10px;align-content:start}
+.ck-media-item.has-error .camera-stage,.ck-media-item.has-error .signature-pad{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 14%,transparent)}
+.ck-media-label{display:flex;align-items:center;gap:6px;margin:0;font-size:12.5px;font-weight:800;color:var(--text)}
+.ck-media .camera-stage{border-radius:16px}
+.ck-media .camera-stage.mirror video{transform:scaleX(-1)}
+.ck-signature{border-radius:16px}
+.ck-signature canvas{height:210px}
+.ck-media-actions{display:flex;flex-wrap:wrap;gap:8px}
+.ck-media-actions .btn{flex:1 1 auto}
+
+.ck-consent{display:flex;align-items:flex-start;gap:10px;margin:18px 0 0;padding:14px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text);line-height:1.5;cursor:pointer}
+.ck-consent input{width:20px;height:20px;flex:0 0 20px;margin:1px 0 0;accent-color:var(--primary)}
+.ck-consent a{color:var(--primary)}
+.ck-consent.has-error{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 6%,var(--surface))}
+
+.ck-submit-bar{position:sticky;bottom:0;margin:18px -24px 0;padding:14px 24px calc(14px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.ck-page .ck-submit{width:100%;min-height:54px;font-size:16px;border-radius:14px}
+.ck-submit[aria-busy="true"]{opacity:.7;pointer-events:none}
+
+.ck-state{padding:44px 28px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.ck-state h2{margin:18px 0 8px;font-size:24px;letter-spacing:-.01em}
+.ck-state p{margin:0;max-width:440px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.ck-state-icon{width:76px;height:76px;border-radius:50%;display:grid;place-items:center}
+.ck-state-icon svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ck-state-icon.ok{background:var(--success-soft);color:var(--success);box-shadow:0 0 0 10px color-mix(in srgb,var(--success-soft) 45%,transparent);animation:ckPop .45s cubic-bezier(.2,1.4,.4,1) both}
+.ck-state-icon.warn{background:var(--warning-soft);color:var(--warning)}
+.ck-success-time{margin:18px 0 22px;padding:8px 14px;border-radius:999px;background:var(--surface-2);font-size:13px;font-weight:700;color:var(--text)}
+.ck-success .btn{min-width:220px}
+.ck-countdown{margin-top:12px!important;font-size:12px!important}
+@keyframes ckPop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+.ck-footer{display:flex;align-items:center;justify-content:center;gap:10px;padding:26px 16px 32px;color:var(--muted);font-size:12.5px}
+.ck-footer a{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-weight:700}
+.ck-footer a:hover{color:var(--primary)}
+.ck-footer-mark{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:8.5px;font-weight:900}
+
+@media (max-width:640px){
+  .ck-hero{padding:22px 16px 92px}
+  .ck-office-logo{width:48px;height:48px;flex-basis:48px;font-size:17px}
+  .ck-main{width:calc(100% - 16px)}
+  .ck-card{border-radius:20px}
+  .ck-card-head{padding:20px 16px 14px}
+  .ck-steps{width:100%}
+  .ck-steps li{flex:1;justify-content:center}
+  #ckForm{padding:2px 16px 0}
+  .ck-grid,.ck-media{grid-template-columns:1fr}
+  .ck-submit-bar{margin:16px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+}

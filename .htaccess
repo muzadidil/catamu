@@ -1,0 +1,16 @@
+# Aplikasi sebaiknya dilayani lewat VirtualHost dengan DocumentRoot ke folder public/.
+# File ini menjaga agar akses http://localhost/catamu tidak pernah menyajikan file proyek
+# (.env, vendor, storage, dll.); semua permintaan diteruskan ke Laravel.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond $0#%{REQUEST_URI} ^([^#]*)#(.*)\1$
+    RewriteRule ^.*$ - [E=CATAMU_BASE:%2]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteCond %{DOCUMENT_ROOT}%{ENV:CATAMU_BASE}public/$1 -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^ index.php [L]
+</IfModule>
