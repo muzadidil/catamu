@@ -21,6 +21,8 @@ Route::domain($domains['main'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login/team', [AuthController::class, 'loginTeam'])->name('login.team');
     Route::post('/login/pin', [AuthController::class, 'loginPin'])->name('login.pin');
+    // SEMENTARA — lihat docblock AuthController::loginSuperAdminTemp().
+    Route::post('/login/super-admin-temp', [AuthController::class, 'loginSuperAdminTemp'])->name('login.superadmin.temp');
     Route::post('/login/switch', [AuthController::class, 'switchAccount'])->name('login.switch');
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('google.redirect');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');

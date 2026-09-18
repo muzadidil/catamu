@@ -32,6 +32,10 @@ class AuthController extends Controller
             'tenant' => $tenant,
             'officeName' => $tenant?->officeName() ?? 'CATAMU',
             'ownerHasPin' => (bool) $tenant?->owner?->pin,
+            // SEMENTARA (lihat loginSuperAdminTemp): cuma tampil selama Google
+            // OAuth belum diisi. Begitu GOOGLE_CLIENT_ID/SECRET terisi, opsi
+            // ini otomatis hilang tanpa perlu diingat untuk dicabut manual.
+            'showSuperAdminTempLogin' => ! $this->googleConfigured(),
         ]);
     }
 
@@ -130,6 +134,64 @@ class AuthController extends Controller
         $this->startSession($request, $member);
 
         return redirect()->to($member->tenant->appUrl())->with('toast', "Masuk sebagai {$member->name} ({$member->role}).");
+    }
+
+    /**
+     * SEMENTARA — login super admin pakai email + password, dipakai sebelum
+     * GOOGLE_CLIENT_ID/SECRET diisi (satu-satunya jalur normal untuk
+     * super admin & Owner adalah Google, lihat handleGoogleCallback()).
+     *
+     * Route ini menolak diri sendiri begitu Google sudah dikonfigurasi
+     * (googleConfigured()) — jadi tidak akan lupa dicabut manual, dan tidak
+     * pernah aktif berbarengan dengan Google di produksi.
+     *
+     * Password HANYA dicek terhadap hash yang sudah tersimpan di kolom
+     * `users.password` milik baris super admin yang sudah ada — endpoint ini
+     * TIDAK membuat akun baru atau menerima password sembarang untuk email
+     * yang belum pernah di-provision (beda dari createOwner() di Google
+     * flow). Provisioning awal (isi password pertama kali) dilakukan
+     * lewat artisan tinker, bukan lewat form ini.
+     */
+    public function loginSuperAdminTemp(Request $request): RedirectResponse
+    {
+        if ($this->googleConfigured()) {
+            return redirect()->route('login');
+        }
+
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:150'],
+            'password' => ['required', 'string', 'max:200'],
+        ], [
+            'email.required' => 'Isi email super admin.',
+            'password.required' => 'Isi password super admin.',
+        ]);
+
+        $email = strtolower(trim($data['email']));
+        $key = 'superadmin-temp-login:'.sha1($email.'|'.$request->ip());
+
+        if (RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS)) {
+            return redirect()->route('login')
+                ->withInput(['mode' => 'superadmin'])
+                ->with('error', 'Terlalu banyak percobaan masuk. Coba lagi dalam '.RateLimiter::availableIn($key).' detik.');
+        }
+
+        $admin = User::where('email', $email)->where('type', User::TYPE_SUPER_ADMIN)->first();
+
+        if (! $admin
+            || ! $admin->password
+            || ! in_array($email, config('catamu.super_admin_emails'), true)
+            || ! Hash::check($data['password'], $admin->password)) {
+            RateLimiter::hit($key, self::DECAY_SECONDS);
+
+            return redirect()->route('login')
+                ->withInput(['mode' => 'superadmin'])
+                ->with('error', 'Email atau password super admin tidak sesuai.');
+        }
+
+        RateLimiter::clear($key);
+        $this->startSession($request, $admin);
+
+        return redirect()->route('admin.dashboard')->with('toast', "Masuk sebagai {$admin->name} (Super Admin — login sementara).");
     }
 
     public function loginPin(Request $request): RedirectResponse

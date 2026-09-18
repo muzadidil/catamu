@@ -72,6 +72,9 @@
       <div class="lock-mode-tabs" role="tablist" aria-label="Masuk sebagai">
         <button class="lock-mode-tab @if ($mode === 'owner') active @endif" type="button" role="tab" data-mode="owner" aria-selected="{{ $mode === 'owner' ? 'true' : 'false' }}">Owner / Admin</button>
         <button class="lock-mode-tab @if ($mode === 'team') active @endif" type="button" role="tab" data-mode="team" aria-selected="{{ $mode === 'team' ? 'true' : 'false' }}">Anggota Tim</button>
+        @if ($showSuperAdminTempLogin)
+        <button class="lock-mode-tab @if ($mode === 'superadmin') active @endif" type="button" role="tab" data-mode="superadmin" aria-selected="{{ $mode === 'superadmin' ? 'true' : 'false' }}">Super Admin (sementara)</button>
+        @endif
       </div>
 
       <div class="lock-login-grid">
@@ -104,6 +107,29 @@
             </div>
           </form>
         </div>
+        @if ($showSuperAdminTempLogin)
+        <div id="superadminUnlockFields" @if ($mode !== 'superadmin') hidden @endif>
+          <form id="superadminLoginForm" method="POST" action="{{ route('login.superadmin.temp') }}">
+            @csrf
+            <div style="display:grid;gap:10px">
+              <div>
+                <label for="superadminLoginEmail">Email</label>
+                <div class="field-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+                  <input class="field" id="superadminLoginEmail" name="email" type="email" value="{{ old('mode') === 'superadmin' ? old('email') : '' }}" autocomplete="username" placeholder="nama@gmail.com" />
+                </div>
+              </div>
+              <div>
+                <label for="superadminLoginPassword">Password</label>
+                <div class="field-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  <input class="field" id="superadminLoginPassword" name="password" type="password" autocomplete="current-password" placeholder="Password super admin" />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        @endif
       </div>
 
       <button class="btn btn-primary" id="unlockBtn" type="button">Masuk</button>
@@ -147,6 +173,7 @@
     const mode = $('unlockMode').value;
     $('ownerUnlockFields').hidden = mode !== 'owner';
     $('teamUnlockFields').hidden = mode !== 'team';
+    if($('superadminUnlockFields')) $('superadminUnlockFields').hidden = mode !== 'superadmin';
     const ownerViaGoogle = mode === 'owner' && !hasPin;
     $('unlockBtn').hidden = ownerViaGoogle;
     $('googleLoginBtn').hidden = mode !== 'owner';
@@ -157,6 +184,10 @@
         ? 'Masukkan PIN Owner 4–6 digit, atau masuk ulang dengan akun Google Owner.'
         : (locked ? 'Owner belum memiliki PIN. Masuk kembali dengan akun Google Owner.' : 'Gunakan akun Google terdaftar untuk mengelola kantor, tim, dan langganan CATAMU.');
       if(hasPin) setTimeout(() => $('unlockPin')?.focus(), 50);
+    }else if(mode === 'superadmin'){
+      $('unlockHelpLabel').textContent = 'Sementara:';
+      $('unlockHelp').textContent = 'Jalur sementara sebelum login Google diaktifkan. Akan otomatis hilang begitu Google dikonfigurasi.';
+      setTimeout(() => $('superadminLoginEmail')?.focus(), 50);
     }else{
       $('unlockHelpLabel').textContent = 'Informasi Anggota Tim:';
       $('unlockHelp').textContent = 'Masuk menggunakan email atau nomor HP anggota aktif dan password yang dibuat Owner pada Kelola Tim.';
@@ -164,9 +195,13 @@
   }
 
   function submit(){
-    if($('unlockMode').value === 'team'){
+    const mode = $('unlockMode').value;
+    if(mode === 'team'){
       if(!$('teamLoginCredential').value.trim() || !$('teamLoginPassword').value){ toast('Isi email/nomor HP dan password anggota.'); return; }
       $('teamLoginForm').submit();
+    }else if(mode === 'superadmin'){
+      if(!$('superadminLoginEmail').value.trim() || !$('superadminLoginPassword').value){ toast('Isi email dan password super admin.'); return; }
+      $('superadminLoginForm').submit();
     }else if(hasPin){
       if(!$('unlockPin').value.trim()){ toast('Masukkan PIN Owner.'); $('unlockPin').focus(); return; }
       $('pinForm').submit();
@@ -185,7 +220,7 @@
 
   $('unlockMode').addEventListener('change', renderMode);
   $('unlockBtn').addEventListener('click', submit);
-  ['unlockPin', 'teamLoginCredential', 'teamLoginPassword'].forEach(id => $(id)?.addEventListener('keydown', e => {
+  ['unlockPin', 'teamLoginCredential', 'teamLoginPassword', 'superadminLoginEmail', 'superadminLoginPassword'].forEach(id => $(id)?.addEventListener('keydown', e => {
     if(e.key === 'Enter'){ e.preventDefault(); submit(); }
   }));
 
