@@ -166,7 +166,6 @@
   ['unlockPin', 'teamLoginCredential', 'teamLoginPassword'].forEach(id => $(id)?.addEventListener('keydown', e => {
     if(e.key === 'Enter'){ e.preventDefault(); submit(); }
   }));
-  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) document.body.classList.add('dark');
 
   renderMode();
   @if (session('error'))
