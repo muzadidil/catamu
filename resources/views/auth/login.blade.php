@@ -9,33 +9,33 @@
 <div class="app-lock show" id="appLock" aria-hidden="false">
   <section class="auth-visual" aria-hidden="true">
     <div class="auth-brand-top">
-      <span class="auth-brand-logo">CA</span>
+      <span class="auth-brand-logo">C</span>
       <div class="auth-brand-copy">
         <strong>CATAMU</strong>
-        <span>Buku Tamu Digital untuk Kantor</span>
+        <span>Buku Tamu Digital</span>
       </div>
     </div>
 
     <div class="auth-slides" id="authSlides">
-      <article class="auth-slide active">
+      <article class="auth-slide auth-slide-1 active">
         <div class="auth-slide-content">
-          <span class="auth-eyebrow">Buku Tamu Digital</span>
-          <h1>Selamat datang di CATAMU</h1>
-          <p>Masuk untuk mencatat tamu, memantau kunjungan, dan mengelola tim kantor Anda secara real-time.</p>
+          <span class="auth-eyebrow"><i></i>Buku Tamu Digital</span>
+          <h1>Kelola Tamu Kantor Lebih Rapi</h1>
+          <p>Tinggalkan buku tamu kertas. Semua kunjungan tercatat otomatis dan bisa dipantau kapan saja.</p>
         </div>
       </article>
-      <article class="auth-slide">
+      <article class="auth-slide auth-slide-2">
         <div class="auth-slide-content">
-          <span class="auth-eyebrow">Cek-in Mandiri</span>
-          <h1>Tamu cek-in sendiri lewat QR</h1>
-          <p>Tanpa antre dan tanpa buku kertas — tamu tinggal scan, isi data, tim langsung mendapat notifikasi.</p>
+          <span class="auth-eyebrow"><i></i>Ketertiban &amp; Keamanan</span>
+          <h1>Registrasi &amp; Check-in Otomatis</h1>
+          <p>Pencatatan data kunjungan, foto tamu, tanda tangan digital, dan departemen tujuan yang tersusun rapi.</p>
         </div>
       </article>
-      <article class="auth-slide">
+      <article class="auth-slide auth-slide-3">
         <div class="auth-slide-content">
-          <span class="auth-eyebrow">Laporan Siap Cetak</span>
-          <h1>Setiap kunjungan tercatat rapi</h1>
-          <p>Foto, tanda tangan, dan tujuan kunjungan tersimpan otomatis dan siap diunduh kapan saja.</p>
+          <span class="auth-eyebrow"><i></i>Laporan &amp; Monitoring</span>
+          <h1>Data Kunjungan Siap Cetak</h1>
+          <p>Rekap tamu harian hingga bulanan tersimpan otomatis dan siap diunduh untuk kebutuhan laporan.</p>
         </div>
       </article>
     </div>
@@ -57,18 +57,24 @@
   <section class="auth-panel">
     <div class="lock-card">
       <div class="auth-mobile-brand">
-        <span class="auth-brand-logo">CA</span>
+        <span class="auth-brand-logo">C</span>
         <div>
           <strong>CATAMU</strong>
-          <span>Buku Tamu Digital untuk Kantor</span>
+          <span>Buku Tamu Digital</span>
         </div>
       </div>
 
-      <div class="lock-logo">CA</div>
-      <h2 id="lockOfficeName">{{ $officeName }}</h2>
-      <p id="lockMessage">{{ $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih akun untuk masuk ke CATAMU.' }}</p>
+      <div class="lock-logo">C</div>
+      <h2 id="lockOfficeName">{{ $tenant ? $officeName : 'Masuk ke CATAMU' }}</h2>
+      <p id="lockMessage">{{ $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
+
+      <input type="hidden" id="unlockMode" value="{{ $mode }}" />
+      <div class="lock-mode-tabs" role="tablist" aria-label="Masuk sebagai">
+        <button class="lock-mode-tab @if ($mode === 'owner') active @endif" type="button" role="tab" data-mode="owner" aria-selected="{{ $mode === 'owner' ? 'true' : 'false' }}">Owner / Admin</button>
+        <button class="lock-mode-tab @if ($mode === 'team') active @endif" type="button" role="tab" data-mode="team" aria-selected="{{ $mode === 'team' ? 'true' : 'false' }}">Anggota Tim</button>
+      </div>
+
       <div class="lock-login-grid">
-        <div><label for="unlockMode">Masuk sebagai</label><select class="field" id="unlockMode"><option value="owner" @selected($mode === 'owner')>Owner / Administrator</option><option value="team" @selected($mode === 'team')>Anggota Tim</option></select></div>
         <div id="ownerUnlockFields" @if ($mode !== 'owner') hidden @endif>
           @if ($ownerHasPin)
           <form id="pinForm" method="POST" action="{{ route('login.pin') }}">
@@ -99,13 +105,15 @@
           </form>
         </div>
       </div>
-      <p class="lock-login-note" id="unlockHelp"></p>
-      <div style="height:10px"></div>
-      <button class="btn btn-primary" id="unlockBtn" type="button" style="width:100%">Masuk</button>
+
+      <button class="btn btn-primary" id="unlockBtn" type="button">Masuk</button>
       <a class="btn lock-google-btn" id="googleLoginBtn" href="{{ route('google.redirect') }}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.57-5.17 3.57-8.81Z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.92l-3.88-3c-1.07.72-2.45 1.15-4.06 1.15-3.13 0-5.78-2.11-6.72-4.95H1.27v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.28 14.28a7.2 7.2 0 0 1 0-4.56v-3.1H1.27a12 12 0 0 0 0 10.76l4.01-3.1Z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44A11.5 11.5 0 0 0 12 0 12 12 0 0 0 1.27 6.62l4.01 3.1C6.22 6.88 8.87 4.77 12 4.77Z"/></svg>
         <span>Masuk dengan Google</span>
       </a>
+
+      <p class="lock-login-note"><strong id="unlockHelpLabel">Informasi Owner:</strong> <span id="unlockHelp"></span></p>
+
       @if ($tenant)
       <form method="POST" action="{{ route('login.switch') }}" class="lock-switch-form">
         @csrf
@@ -114,6 +122,8 @@
       @else
       <p class="lock-switch-form"><a class="lock-switch-btn" href="{{ route('landing') }}">← Kembali ke beranda CATAMU</a></p>
       @endif
+
+      <p class="lock-foot">© {{ date('Y') }} CATAMU • Buku Tamu Digital &amp; Manajemen Kunjungan</p>
     </div>
   </section>
 </div>
@@ -142,11 +152,13 @@
     $('googleLoginBtn').hidden = mode !== 'owner';
     $('googleLoginBtn').classList.toggle('btn-primary', ownerViaGoogle);
     if(mode === 'owner'){
+      $('unlockHelpLabel').textContent = 'Informasi Owner:';
       $('unlockHelp').textContent = hasPin
         ? 'Masukkan PIN Owner 4–6 digit, atau masuk ulang dengan akun Google Owner.'
-        : (locked ? 'Owner belum memiliki PIN. Masuk kembali dengan akun Google Owner.' : 'Owner masuk dengan akun Google. Kantor baru otomatis dibuat saat pertama kali masuk.');
+        : (locked ? 'Owner belum memiliki PIN. Masuk kembali dengan akun Google Owner.' : 'Gunakan akun Google terdaftar untuk mengelola kantor, tim, dan langganan CATAMU.');
       if(hasPin) setTimeout(() => $('unlockPin')?.focus(), 50);
     }else{
+      $('unlockHelpLabel').textContent = 'Informasi Anggota Tim:';
       $('unlockHelp').textContent = 'Masuk menggunakan email atau nomor HP anggota aktif dan password yang dibuat Owner pada Kelola Tim.';
     }
   }
@@ -160,6 +172,16 @@
       $('pinForm').submit();
     }
   }
+
+  document.querySelectorAll('.lock-mode-tab').forEach(tab => tab.addEventListener('click', () => {
+    document.querySelectorAll('.lock-mode-tab').forEach(t => {
+      const on = t === tab;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    $('unlockMode').value = tab.dataset.mode;
+    $('unlockMode').dispatchEvent(new Event('change'));
+  }));
 
   $('unlockMode').addEventListener('change', renderMode);
   $('unlockBtn').addEventListener('click', submit);
