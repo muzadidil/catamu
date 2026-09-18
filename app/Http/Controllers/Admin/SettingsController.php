@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PlatformSetting;
+use App\Support\Affiliate;
+use App\Support\Format;
 use App\Support\ImageStore;
 use App\Support\QrisImage;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +21,28 @@ class SettingsController extends Controller
             'trialDays' => PlatformSetting::trialDays(),
             'qrisUrl' => QrisImage::url('admin.media.qris'),
             'plan' => config('catamu.plans')[0],
+            'affiliateRate' => Affiliate::rate(),
+            'affiliateMinPayout' => Affiliate::minPayout(),
         ]);
+    }
+
+    public function updateAffiliate(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'affiliate_rate' => ['required', 'integer', 'min:0', 'max:100'],
+            'affiliate_min_payout' => ['required', 'integer', 'min:0', 'max:100000000'],
+        ], [
+            'affiliate_rate.required' => 'Persentase komisi wajib diisi.',
+            'affiliate_rate.integer' => 'Persentase komisi harus berupa angka.',
+            'affiliate_rate.max' => 'Persentase komisi maksimal 100%.',
+            'affiliate_min_payout.required' => 'Minimum pencairan wajib diisi.',
+            'affiliate_min_payout.integer' => 'Minimum pencairan harus berupa angka rupiah.',
+        ]);
+
+        PlatformSetting::put('affiliate_rate', $data['affiliate_rate']);
+        PlatformSetting::put('affiliate_min_payout', $data['affiliate_min_payout']);
+
+        return back()->with('toast', "Komisi afiliasi diatur {$data['affiliate_rate']}% dengan minimum pencairan ".Format::rupiah($data['affiliate_min_payout']).'.');
     }
 
     public function updateTrial(Request $request): RedirectResponse

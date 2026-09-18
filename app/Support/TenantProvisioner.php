@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class TenantProvisioner
 {
-    public static function createOwner(string $name, string $email, ?string $googleId): User
+    public static function createOwner(string $name, string $email, ?string $googleId, ?Tenant $referrer = null): User
     {
-        return DB::transaction(function () use ($name, $email, $googleId) {
+        return DB::transaction(function () use ($name, $email, $googleId, $referrer) {
             $now = now();
             $trialDays = PlatformSetting::trialDays();
             $tenant = Tenant::create([
@@ -19,6 +19,7 @@ class TenantProvisioner
                 'plan' => "Trial {$trialDays} Hari",
                 'trial_started_at' => $now,
                 'trial_expires_at' => $now->copy()->addDays($trialDays),
+                'referred_by_tenant_id' => $referrer?->id,
             ]);
 
             $tenant->departments()->createMany(

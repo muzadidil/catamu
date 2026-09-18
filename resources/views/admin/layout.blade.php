@@ -4,6 +4,7 @@
     ['route' => 'admin.dashboard', 'match' => 'admin.dashboard', 'label' => 'Ringkasan', 'short' => 'Ringkasan', 'icon' => 'home'],
     ['route' => 'admin.payments', 'match' => 'admin.payments*', 'label' => 'Pembayaran', 'short' => 'Bayar', 'icon' => 'card', 'badge' => $pendingPaymentsCount],
     ['route' => 'admin.tenants', 'match' => 'admin.tenants*', 'label' => 'Kantor', 'short' => 'Kantor', 'icon' => 'building'],
+    ['route' => 'admin.affiliates', 'match' => 'admin.affiliates*', 'label' => 'Afiliasi', 'short' => 'Afiliasi', 'icon' => 'link', 'badge' => $pendingPayoutsCount],
     ['route' => 'admin.feedbacks', 'match' => 'admin.feedbacks', 'label' => 'Masukan & Rating', 'short' => 'Masukan', 'icon' => 'chat'],
     ['route' => 'admin.settings', 'match' => 'admin.settings*', 'label' => 'Pengaturan', 'short' => 'Setelan', 'icon' => 'settings'],
   ];

@@ -5,6 +5,10 @@
       <span class="settings-item-icon"><svg viewBox="0 0 24 24"><path d="M3 7l4 3 5-6 5 6 4-3-2 10H5L3 7Z"/><path d="M6 20h12"/></svg></span>
       <span class="settings-item-main"><span class="settings-item-text">Berlangganan</span><span class="settings-item-note" id="subscriptionMenuNote">{{ $state['subscription']['plan'] }}</span></span><span class="settings-item-arrow">›</span>
     </button>
+    <button class="settings-item" type="button" data-setting-action="affiliate">
+      <span class="settings-item-icon"><svg viewBox="0 0 24 24"><path d="M10.5 13.5a4.5 4.5 0 0 0 6.4 0l2.2-2.2a4.5 4.5 0 0 0-6.4-6.4l-1.3 1.3"/><path d="M13.5 10.5a4.5 4.5 0 0 0-6.4 0l-2.2 2.2a4.5 4.5 0 0 0 6.4 6.4l1.3-1.3"/></svg></span>
+      <span class="settings-item-main"><span class="settings-item-text">Afiliasi &amp; Referral</span><span class="settings-item-note" id="affiliateMenuNote">Ajak kantor lain, dapat komisi</span></span><span class="settings-item-arrow">›</span>
+    </button>
   </div>
 
   <div class="settings-group">

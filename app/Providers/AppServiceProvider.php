@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Payment;
+use App\Models\PayoutRequest;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,10 +19,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::composer('admin.layout', fn ($view) => $view->with(
-            'pendingPaymentsCount',
-            Payment::where('status', Payment::STATUS_PENDING)->count()
-        ));
+        View::composer('admin.layout', fn ($view) => $view
+            ->with('pendingPaymentsCount', Payment::where('status', Payment::STATUS_PENDING)->count())
+            ->with('pendingPayoutsCount', PayoutRequest::where('status', PayoutRequest::STATUS_PENDING)->count()));
 
         RateLimiter::for('cekin', fn (Request $request) => Limit::perMinute(config('catamu.checkin_per_minute'))
             ->by($request->ip().'|'.$request->route('slug'))

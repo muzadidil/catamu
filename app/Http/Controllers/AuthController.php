@@ -36,6 +36,8 @@ class AuthController extends Controller
             // OAuth belum diisi. Begitu GOOGLE_CLIENT_ID/SECRET terisi, opsi
             // ini otomatis hilang tanpa perlu diingat untuk dicabut manual.
             'showSuperAdminTempLogin' => ! $this->googleConfigured(),
+            // Nama kantor pengajak, kalau tamu ini datang lewat link /join.
+            'inviter' => $this->pendingReferrer($request)?->officeName(),
         ]);
     }
 
@@ -91,7 +93,8 @@ class AuthController extends Controller
                     ? 'Email ini terdaftar sebagai anggota tim. Pilih "Anggota Tim" untuk masuk.'
                     : 'Email ini sudah digunakan akun lain.');
             }
-            $owner = TenantProvisioner::createOwner((string) $google->getName(), $email, $google->getId());
+            $owner = TenantProvisioner::createOwner((string) $google->getName(), $email, $google->getId(), $this->pendingReferrer($request));
+            $request->session()->forget('referral_tenant_id');
         }
 
         $this->startSession($request, $owner);
@@ -261,6 +264,14 @@ class AuthController extends Controller
         }
 
         $user->forceFill(['last_login_at' => now()])->save();
+    }
+
+    /** Kantor pengajak dari link /join, menunggu di sesi sampai pendaftaran selesai. */
+    private function pendingReferrer(Request $request): ?Tenant
+    {
+        $id = $request->session()->get('referral_tenant_id');
+
+        return $id ? Tenant::find($id) : null;
     }
 
     private function lockedTenant(Request $request): ?Tenant

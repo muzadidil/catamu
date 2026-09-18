@@ -27,6 +27,7 @@ class ClientState
                 ? $tenant->guests()->orderByDesc('check_in')->get()->map->toClient()->all()
                 : [],
             'subscription' => self::subscription($tenant),
+            'affiliate' => $user->isOwner() ? Affiliate::summary($tenant) : null,
             'feedbacks' => $tenant->feedbacks()->latest('id')->get()->map->toClient()->all(),
             'rating' => self::rating($tenant),
             'notifications' => $tenant->appNotifications()->latest('id')->limit(config('catamu.notification_limit'))->get()->map->toClient()->all(),

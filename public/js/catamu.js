@@ -56,7 +56,7 @@
       return ['trial','trial-pending','active','active-pending'].includes(subscriptionState(source,now));
     }
     function roleAccess(actor={}){
-      if(!actor || actor.type==='owner') return {guestsView:true,guestsWrite:true,reports:true,settings:true,teamManage:true,subscriptionManage:true,accountManage:true};
+      if(!actor || actor.type==='owner') return {guestsView:true,guestsWrite:true,reports:true,settings:true,teamManage:true,subscriptionManage:true,accountManage:true,affiliateManage:true};
       const role=String(actor.role||'Resepsionis');
       const permissions=actor.permissions||{};
       const viewer=role==='Viewer';
@@ -68,7 +68,8 @@
         settings:!!permissions.settings && !viewer,
         teamManage:admin && !!permissions.settings,
         subscriptionManage:false,
-        accountManage:false
+        accountManage:false,
+        affiliateManage:false
       };
     }
     return {DAY,normalizeSubscription,subscriptionState,subscriptionWritable,roleAccess};
@@ -118,6 +119,7 @@
   let qrisPaymentProofData = '';
   let feedbacks = Array.isArray(BOOT.feedbacks) ? BOOT.feedbacks : [];
   let rating = {score:0,comment:'',updatedAt:null,...(BOOT.rating||{})};
+  let affiliate = BOOT.affiliate || null;
   let notifications = Array.isArray(BOOT.notifications) ? BOOT.notifications : [];
   let notificationPrefs = {...notificationDefaults, ...(BOOT.notificationPrefs||{})};
   const seenNotificationIds = new Set(notifications.map(n=>n.id));
@@ -560,6 +562,7 @@
   function canOpenSettingsView(view){
     const access=currentAccess();
     if(view==='subscription') return access.subscriptionManage;
+    if(view==='affiliate') return access.affiliateManage;
     if(view==='account') return access.accountManage;
     if(view==='team') return access.teamManage;
     if(['departments','guest-fields','application','notifications'].includes(view)) return access.settings;
@@ -583,6 +586,7 @@
     setHidden('#exportBtn,#printBtn,#shareGuest58Btn,#shareGuestA4Btn',!access.reports);
     setHidden('#page-dashboard .grid-stats,#page-dashboard .dashboard-layout',!(access.guestsView||access.reports));
     setHidden('[data-setting-action="subscription"]',!access.subscriptionManage);
+    setHidden('[data-setting-action="affiliate"]',!access.affiliateManage);
     setHidden('[data-setting-action="account"]',!access.accountManage);
     setHidden('[data-setting-action="team"]',!access.teamManage);
     ['departments','guest-fields','application','notifications'].forEach(view=>setHidden(`[data-setting-action="${view}"]`,!access.settings));
@@ -662,6 +666,7 @@
 
   const settingViews = {
     subscription:'settingsSubscriptionView',
+    affiliate:'settingsAffiliateView',
     account:'settingsAccountView',
     team:'settingsTeamView',
     departments:'settingsDepartmentsView',
@@ -677,6 +682,7 @@
 
   const settingViewMeta = {
     subscription:['Berlangganan','Status paket dan masa aktif aplikasi.'],
+    affiliate:['Afiliasi & Referral','Ajak kantor lain dan dapatkan komisi.'],
     account:['Akun','Profil pengguna dan penguncian aplikasi.'],
     team:['Kelola Tim','Anggota, role, status, dan hak akses.'],
     departments:['Departemen','Kelola departemen tujuan kunjungan tamu.'],
@@ -718,6 +724,7 @@
     document.title=`${meta[0]} • CATAMU`;
 
     if(view==='subscription') renderSubscription();
+    if(view==='affiliate') renderAffiliate();
     if(view==='account') renderProfile();
     if(view==='team') renderTeam();
     if(view==='departments') renderDepartments();
@@ -740,10 +747,150 @@
     openSettingsView(action);
   }
 
+  /* ————— Afiliasi & referral ————— */
+
+  function affiliateReady(){ return !!affiliate && !!$('settingsAffiliateView'); }
+
+  function affiliateAccountFilled(){
+    const account=affiliate?.account||{};
+    return !!(account.bank && account.number && account.name);
+  }
+
+  function renderAffiliate(){
+    if(!affiliateReady()) return;
+    const balance=affiliate.balance||{};
+    const bare=url=>String(url||'').replace(/^https?:\/\//,'');
+
+    $('affBalanceStat').textContent=formatCurrency(balance.available||0);
+    $('affSignupStat').textContent=String(affiliate.signups||0);
+    $('affSubscribedStat').textContent=String(affiliate.subscribed||0);
+    $('affLinkText').textContent=bare(affiliate.link);
+    $('affAliasNote').textContent=`Bentuk lain yang juga berfungsi: ${bare(affiliate.link).replace('/join/','/join=')}`;
+    $('affRateNote').textContent=`Komisi ${affiliate.rate}% dari tiap pembayaran kantor yang Anda ajak — sekitar ${formatCurrency(Math.floor((affiliate.planAmount||0)*(affiliate.rate||0)/100))} per kantor setiap kali mereka berlangganan.`;
+    $('affCodeInput').value=affiliate.code||'';
+    $('affVisitStat').textContent=`${affiliate.visits||0} kali`;
+
+    const account=affiliate.account||{};
+    $('affBankInput').value=account.bank||'';
+    $('affAccountInput').value=account.number||'';
+    $('affAccountNameInput').value=account.name||'';
+
+    const shareBtn=$('affShareBtn');
+    if(shareBtn) shareBtn.hidden=!navigator.share;
+
+    renderAffiliatePayoutForm();
+    renderAffiliateLists();
+  }
+
+  function renderAffiliatePayoutForm(){
+    if(!affiliateReady()) return;
+    const balance=affiliate.balance||{};
+    const available=Number(balance.available)||0;
+    const minimum=Number(affiliate.minPayout)||0;
+    const pending=(affiliate.payouts||[]).find(p=>p.status==='pending');
+    const amountField=$('affPayoutAmount');
+    const notice=$('affPayoutPending');
+
+    $('affPayoutNote').textContent=`Tersedia ${formatCurrency(available)} dari total komisi ${formatCurrency(balance.earned||0)}.`;
+
+    notice.hidden=!pending;
+    if(pending) notice.textContent=`Pengajuan ${formatCurrency(pending.amount)} sedang menunggu diproses admin.`;
+
+    let blocked='';
+    if(pending) blocked='Tunggu pengajuan sebelumnya diproses admin.';
+    else if(!affiliateAccountFilled()) blocked='Lengkapi rekening pencairan terlebih dahulu.';
+    else if(available<minimum) blocked=`Saldo belum mencapai minimum pencairan ${formatCurrency(minimum)}.`;
+
+    $('affPayoutHint').textContent=blocked||`Minimal pencairan ${formatCurrency(minimum)}, maksimal ${formatCurrency(available)}.`;
+    amountField.max=String(available);
+    amountField.disabled=!!blocked;
+    $('affPayoutBtn').disabled=!!blocked;
+    if(!blocked && !Number(amountField.value)) amountField.value=String(available);
+    if(blocked) amountField.value='';
+  }
+
+  function renderAffiliateLists(){
+    if(!affiliateReady()) return;
+    const offices=affiliate.offices||[];
+    $('affOfficeList').innerHTML=offices.length
+      ? offices.map(o=>`<div class="aff-row"><div class="aff-row-main"><b>${esc(o.name)}</b><small>Bergabung ${fmtDateTime(o.joinedAt)}</small></div><span class="aff-tag ${o.subscribed?'is-on':''}">${esc(o.status)}</span></div>`).join('')
+      : '<p class="hint">Belum ada kantor yang mendaftar lewat link Anda.</p>';
+
+    const commissions=affiliate.commissions||[];
+    $('affCommissionList').innerHTML=commissions.length
+      ? commissions.map(c=>`<div class="aff-row"><div class="aff-row-main"><b>${esc(c.office)}</b><small>${c.rate}% dari ${formatCurrency(c.baseAmount)} • ${fmtDateTime(c.createdAt)}</small></div><span class="aff-amount">+${formatCurrency(c.amount)}</span></div>`).join('')
+      : '<p class="hint">Belum ada komisi masuk.</p>';
+
+    const payouts=affiliate.payouts||[];
+    const tone=status=>status==='approved'?'is-on':(status==='rejected'?'is-off':'');
+    $('affPayoutList').innerHTML=payouts.length
+      ? payouts.map(p=>`<div class="aff-row"><div class="aff-row-main"><b>${formatCurrency(p.amount)}</b><small>${esc(p.bank)} ${esc(p.account)} • ${fmtDateTime(p.createdAt)}${p.note?` • ${esc(p.note)}`:''}</small></div><span class="aff-tag ${tone(p.status)}">${esc(p.statusLabel)}</span></div>`).join('')
+      : '<p class="hint">Belum ada pengajuan pencairan.</p>';
+  }
+
+  async function copyAffiliateLink(){
+    if(!affiliateReady()) return;
+    try{
+      await navigator.clipboard.writeText(affiliate.link);
+      toast('Link undangan disalin.');
+    }catch{
+      toast(`Salin manual: ${affiliate.link}`);
+    }
+  }
+
+  async function shareAffiliateLink(){
+    if(!affiliateReady() || !navigator.share) return;
+    try{
+      await navigator.share({title:'CATAMU — Buku Tamu Digital',text:'Kelola buku tamu kantor dengan CATAMU.',url:affiliate.link});
+    }catch{ /* dibatalkan pengguna */ }
+  }
+
+  async function saveAffiliateCode(button){
+    if(!affiliateReady() || !guardCapability('affiliateManage','mengatur kode afiliasi',false)) return;
+    const code=$('affCodeInput').value.trim();
+    if(!code){ toast('Isi kode referral yang diinginkan.'); return; }
+    if(code.toUpperCase()===String(affiliate.code||'').toUpperCase()){ toast('Kode belum berubah.'); return; }
+    try{
+      const data=await busy(button,()=>api('PUT','/api/affiliate/code',{code}));
+      affiliate=data.affiliate;
+      renderAffiliate();
+      renderSettingsMenuNotes();
+      toast('Kode referral diperbarui. Link lama tidak berlaku lagi.');
+    }catch(error){ reportApiError(error); }
+  }
+
+  async function saveAffiliateAccount(event){
+    event.preventDefault();
+    if(!affiliateReady() || !guardCapability('affiliateManage','mengatur rekening pencairan',false)) return;
+    const payload={bank:$('affBankInput').value.trim(),number:$('affAccountInput').value.trim(),name:$('affAccountNameInput').value.trim()};
+    if(!payload.bank || !payload.number || !payload.name){ toast('Lengkapi bank, nomor rekening, dan nama pemilik.'); return; }
+    try{
+      const data=await busy(event.submitter,()=>api('PUT','/api/affiliate/account',payload));
+      affiliate=data.affiliate;
+      renderAffiliate();
+      toast('Rekening pencairan disimpan.');
+    }catch(error){ reportApiError(error); }
+  }
+
+  async function submitAffiliatePayout(event){
+    event.preventDefault();
+    if(!affiliateReady() || !guardCapability('affiliateManage','mengajukan pencairan komisi',false)) return;
+    const amount=Math.floor(Number($('affPayoutAmount').value)||0);
+    if(amount<=0){ toast('Isi nominal yang ingin dicairkan.'); return; }
+    try{
+      const data=await busy(event.submitter,()=>api('POST','/api/affiliate/payouts',{amount}));
+      affiliate=data.affiliate;
+      renderAffiliate();
+      renderSettingsMenuNotes();
+      toast('Pengajuan pencairan terkirim. Menunggu diproses admin.');
+    }catch(error){ reportApiError(error); }
+  }
+
   function renderSettingsMenuNotes(){
     const state=subscriptionState();
     const labels={trial:`Trial • sampai ${formatDateOnly(subscription.trialExpiresAt)}`,'trial-pending':'Trial • pembayaran pending',active:subscription.lifetime?'Lifetime • tanpa batas waktu':`${subscription.plan} • aktif sampai ${formatDateOnly(subscription.expiresAt)}`,'active-pending':`${subscription.plan} • perpanjangan pending`,pending:'Menunggu verifikasi • baca saja',expired:'Masa aktif berakhir • baca saja'};
     $('subscriptionMenuNote').textContent=labels[state]||'Status tidak diketahui';
+    if(affiliate) $('affiliateMenuNote').textContent=`${formatCurrency(affiliate.balance?.available||0)} siap dicairkan • ${affiliate.signups||0} kantor diajak`;
     $('accountMenuNote').textContent=profile.name ? `${profile.name}${profile.hasPin?' • PIN aktif':''}` : 'Profil pengguna & PIN';
     $('teamMenuNote').textContent=`${team.length} anggota`;
     const activeDepartments=departments.filter(d=>d.active!==false).length;
@@ -2374,6 +2521,11 @@
 
   document.querySelectorAll('[data-setting-action]').forEach(btn=>btn.addEventListener('click',()=>handleSettingAction(btn.dataset.settingAction)));
   document.querySelectorAll('[data-setting-back]').forEach(btn=>btn.addEventListener('click',()=>openSettingsView('menu')));
+  if($('affCopyBtn')) $('affCopyBtn').addEventListener('click',copyAffiliateLink);
+  if($('affShareBtn')) $('affShareBtn').addEventListener('click',shareAffiliateLink);
+  if($('affCodeSaveBtn')) $('affCodeSaveBtn').addEventListener('click',()=>saveAffiliateCode($('affCodeSaveBtn')));
+  if($('affAccountForm')) $('affAccountForm').addEventListener('submit',saveAffiliateAccount);
+  if($('affPayoutForm')) $('affPayoutForm').addEventListener('submit',submitAffiliatePayout);
   document.querySelectorAll('[data-plan-days]').forEach(btn=>btn.addEventListener('click',()=>openQrisRenewalModal(Number(btn.dataset.planDays),btn.dataset.planName)));
   $('chooseQrisPaymentProofBtn').addEventListener('click',()=>{
     const input=$('qrisPaymentProofInput');

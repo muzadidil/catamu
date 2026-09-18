@@ -56,6 +56,7 @@ class User extends Authenticatable
             return [
                 'guestsView' => true, 'guestsWrite' => true, 'reports' => true, 'settings' => true,
                 'teamManage' => true, 'subscriptionManage' => true, 'accountManage' => true,
+                'affiliateManage' => true,
             ];
         }
 
@@ -72,6 +73,8 @@ class User extends Authenticatable
             'teamManage' => $admin && ! empty($permissions['settings']),
             'subscriptionManage' => false,
             'accountManage' => false,
+            // Afiliasi menyangkut uang milik kantor, jadi hanya Owner.
+            'affiliateManage' => false,
         ];
     }
 

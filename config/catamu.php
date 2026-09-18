@@ -21,6 +21,13 @@ return [
         explode(',', (string) env('SUPER_ADMIN_EMAILS', ''))
     ))),
 
+    // Program afiliasi antar kantor. Nilai default; super admin dapat
+    // mengubahnya di admin > Pengaturan.
+    'affiliate' => [
+        'rate' => 20,          // persen komisi dari tiap pembayaran yang disetujui
+        'min_payout' => 50000, // saldo minimum untuk mengajukan pencairan
+    ],
+
     // Harus sama dengan tombol paket (data-plan-days / data-plan-name) di halaman Berlangganan.
     'plans' => [
         ['name' => '1 Tahun', 'days' => 365, 'amount' => 99000],

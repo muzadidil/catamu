@@ -39,6 +39,9 @@ class Subscriptions
 
         Notifier::notify($tenant, 'subscription', 'Pembayaran disetujui', self::activeMessage($tenant));
 
+        // Kantor pengajak dapat komisi dari tiap pembayaran ini, termasuk perpanjangan.
+        Affiliate::recordCommission($payment);
+
         return $tenant;
     }
 

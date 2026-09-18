@@ -68,6 +68,10 @@
       <h2 id="lockOfficeName">{{ $tenant ? $officeName : 'Masuk ke CATAMU' }}</h2>
       <p id="lockMessage">{{ $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
 
+      @if ($inviter)
+      <div class="lock-invite">Anda diundang oleh <b>{{ $inviter }}</b>. Buat kantor baru lewat "Masuk dengan Google" di bawah.</div>
+      @endif
+
       <input type="hidden" id="unlockMode" value="{{ $mode }}" />
       <div class="lock-mode-tabs" role="tablist" aria-label="Masuk sebagai">
         <button class="lock-mode-tab @if ($mode === 'owner') active @endif" type="button" role="tab" data-mode="owner" aria-selected="{{ $mode === 'owner' ? 'true' : 'false' }}">Owner / Admin</button>

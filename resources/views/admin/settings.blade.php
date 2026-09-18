@@ -58,6 +58,36 @@
 </div>
 
 <section class="ad-card">
+  <header class="ad-card-head">
+    <div><h2>Program afiliasi</h2><p>Komisi untuk kantor yang mengajak kantor lain berlangganan</p></div>
+    <span class="ad-card-icon tone-brand">@include('admin.partials.icon', ['name' => 'link'])</span>
+  </header>
+  <form method="POST" action="{{ route('admin.settings.affiliate') }}" class="ad-form">
+    @csrf
+    <div class="ad-grid-2">
+      <label class="ad-field" for="affiliateRate">
+        <span class="ad-field-label">Komisi per pembayaran</span>
+        <span class="ad-input-group">
+          <input id="affiliateRate" name="affiliate_rate" type="number" min="0" max="100" inputmode="numeric" value="{{ old('affiliate_rate', $affiliateRate) }}" required />
+          <span>%</span>
+        </span>
+        <span class="ad-field-hint">Saat ini {{ $affiliateRate }}% dari {{ Format::rupiah($plan['amount']) }} = {{ Format::rupiah((int) floor($plan['amount'] * $affiliateRate / 100)) }} untuk tiap kantor yang diajak.</span>
+      </label>
+      <label class="ad-field" for="affiliateMinPayout">
+        <span class="ad-field-label">Minimum pencairan</span>
+        <span class="ad-input-group">
+          <input id="affiliateMinPayout" name="affiliate_min_payout" type="number" min="0" step="1000" inputmode="numeric" value="{{ old('affiliate_min_payout', $affiliateMinPayout) }}" required />
+          <span>rupiah</span>
+        </span>
+        <span class="ad-field-hint">Owner baru dapat mengajukan pencairan setelah saldonya mencapai nilai ini.</span>
+      </label>
+    </div>
+    <p class="ad-field-hint">Perubahan berlaku untuk komisi yang tercatat setelah disimpan. Komisi lama tetap memakai persentase yang berlaku saat itu.</p>
+    <div class="ad-form-actions"><button class="ad-btn ad-btn--primary" type="submit">Simpan Pengaturan Afiliasi</button></div>
+  </form>
+</section>
+
+<section class="ad-card">
   <header class="ad-card-head"><div><h2>Paket langganan</h2><p>Paket yang tampil di aplikasi kantor dan landing page</p></div></header>
   <div class="ad-plan">
     <div class="ad-plan-main">

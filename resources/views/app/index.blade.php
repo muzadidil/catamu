@@ -26,6 +26,8 @@
 
           @include('app.settings.subscription')
 
+          @include('app.settings.affiliate')
+
           @include('app.settings.account')
 
           @include('app.settings.team')

@@ -6,6 +6,7 @@ use App\Support\ImageStore;
 use App\Support\TenantDefaults;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
@@ -74,6 +75,38 @@ class Tenant extends Model
     public function feedbacks(): HasMany
     {
         return $this->hasMany(Feedback::class);
+    }
+
+    /** Kantor yang mengajak kantor ini lewat link afiliasi. */
+    public function referrer(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class, 'referred_by_tenant_id');
+    }
+
+    /** Kantor yang berhasil diajak kantor ini. */
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Tenant::class, 'referred_by_tenant_id');
+    }
+
+    public function referralCommissions(): HasMany
+    {
+        return $this->hasMany(ReferralCommission::class, 'referrer_tenant_id');
+    }
+
+    public function payoutRequests(): HasMany
+    {
+        return $this->hasMany(PayoutRequest::class);
+    }
+
+    public function pendingPayoutRequest(): HasOne
+    {
+        return $this->hasOne(PayoutRequest::class)->where('status', PayoutRequest::STATUS_PENDING)->latestOfMany();
+    }
+
+    public function hasPayoutAccount(): bool
+    {
+        return filled($this->payout_bank) && filled($this->payout_account) && filled($this->payout_name);
     }
 
     public function pendingPayment(): HasOne

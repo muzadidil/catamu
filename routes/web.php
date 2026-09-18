@@ -5,6 +5,7 @@ use App\Http\Controllers\Api;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\JoinController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Http\Request;
@@ -41,6 +42,11 @@ Route::domain($domains['main'])->group(function () {
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+    // Link afiliasi. Bentuk /join=KODE dilayani juga karena itu contoh link yang
+    // sudah terlanjur dibagikan; keduanya menuju handler yang sama.
+    Route::get('/join/{code}', [JoinController::class, 'enter'])->name('join');
+    Route::get('/join={code}', [JoinController::class, 'enter'])->name('join.alias');
+
     Route::view('/privacy-policy', 'legal.privacy')->name('legal.privacy');
     Route::view('/terms', 'legal.terms')->name('legal.terms');
 });
@@ -61,11 +67,16 @@ $onMainDomain('admin', 'admin')->middleware('superadmin')->name('admin.')->group
     Route::post('/kantor/{tenant}/lifetime', [Admin\TenantController::class, 'toggleLifetime'])->name('tenants.lifetime');
     Route::delete('/kantor/{tenant}', [Admin\TenantController::class, 'destroy'])->name('tenants.destroy');
 
+    Route::get('/afiliasi', [Admin\AffiliateController::class, 'index'])->name('affiliates');
+    Route::post('/afiliasi/{payout}/setujui', [Admin\AffiliateController::class, 'approve'])->name('affiliates.approve');
+    Route::post('/afiliasi/{payout}/tolak', [Admin\AffiliateController::class, 'reject'])->name('affiliates.reject');
+
     Route::get('/masukan', [Admin\FeedbackController::class, 'index'])->name('feedbacks');
 
     Route::get('/pengaturan', [Admin\SettingsController::class, 'edit'])->name('settings');
     Route::post('/pengaturan/trial', [Admin\SettingsController::class, 'updateTrial'])->name('settings.trial');
     Route::post('/pengaturan/qris', [Admin\SettingsController::class, 'updateQris'])->name('settings.qris');
+    Route::post('/pengaturan/afiliasi', [Admin\SettingsController::class, 'updateAffiliate'])->name('settings.affiliate');
 
     Route::get('/media/payments/{payment}/proof', [MediaController::class, 'payment'])->name('media.payment');
     Route::get('/media/qris', [MediaController::class, 'qris'])->name('media.qris');
@@ -126,6 +137,10 @@ $onMainDomain('cekin', 'cekin')->group(function () {
                 Route::delete('/account', [Api\AccountController::class, 'destroy']);
 
                 Route::post('/payments', [Api\PaymentController::class, 'store']);
+
+                Route::put('/affiliate/code', [Api\AffiliateController::class, 'updateCode']);
+                Route::put('/affiliate/account', [Api\AffiliateController::class, 'updateAccount']);
+                Route::post('/affiliate/payouts', [Api\AffiliateController::class, 'storePayout']);
 
                 Route::post('/feedbacks', [Api\FeedbackController::class, 'store']);
                 Route::delete('/feedbacks/{id}', [Api\FeedbackController::class, 'destroy']);
