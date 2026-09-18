@@ -13,6 +13,19 @@ use Illuminate\Support\Facades\Route;
 $domains = config('catamu.domains');
 
 /*
+| Subdomain admin/cekin butuh DNS + vhost sendiri. Selama belum dibuat,
+| CATAMU_ADMIN_DOMAIN / CATAMU_CEKIN_DOMAIN boleh disamakan dengan domain
+| utama — grup rutenya otomatis pindah ke path /admin dan /cekin di domain
+| utama. Nama rute tidak berubah, jadi route('admin.dashboard') dan
+| Tenant::appUrl() ikut menyesuaikan tanpa ada yang perlu diubah lagi.
+*/
+$onMainDomain = function (string $role, string $prefix) use ($domains) {
+    $route = Route::domain($domains[$role]);
+
+    return $domains[$role] === $domains['main'] ? $route->prefix($prefix) : $route;
+};
+
+/*
 | catamu.com — landing page, login Owner/anggota tim, halaman legal
 */
 Route::domain($domains['main'])->group(function () {
@@ -33,9 +46,9 @@ Route::domain($domains['main'])->group(function () {
 });
 
 /*
-| admin.catamu.com — backoffice super admin
+| admin.catamu.com — backoffice super admin (fallback: catamu.com/admin)
 */
-Route::domain($domains['admin'])->middleware('superadmin')->name('admin.')->group(function () {
+$onMainDomain('admin', 'admin')->middleware('superadmin')->name('admin.')->group(function () {
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/pembayaran', [Admin\PaymentController::class, 'index'])->name('payments');
@@ -61,8 +74,9 @@ Route::domain($domains['admin'])->middleware('superadmin')->name('admin.')->grou
 /*
 | cekin.catamu.com/{nama-kantor}      — form cek-in mandiri untuk tamu (publik)
 | cekin.catamu.com/{nama-kantor}/app  — aplikasi kantor (login)
+| (fallback: catamu.com/cekin/{nama-kantor})
 */
-Route::domain($domains['cekin'])->group(function () {
+$onMainDomain('cekin', 'cekin')->group(function () {
     Route::get('/', fn () => redirect()->route('landing'));
 
     Route::middleware('auth')->group(function () {
