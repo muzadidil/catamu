@@ -83,8 +83,8 @@
       @else
       <div class="lock-logo">{{ $brandInitial }}</div>
       @endif
-      <h2 id="lockOfficeName">{{ $tenant ? $officeName : ($branding ? 'Masuk ke '.$brandName : 'Masuk ke CATAMU') }}</h2>
-      <p id="lockMessage">{{ $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
+      <h2 id="lockOfficeName">{{ $branding ? 'Masuk ke '.$brandName : ($tenant ? $officeName : 'Masuk ke CATAMU') }}</h2>
+      <p id="lockMessage">{{ ! $branding && $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
 
       @if ($inviter)
       <div class="lock-invite">Anda diundang oleh <b>{{ $inviter }}</b>. Buat kantor baru lewat "Masuk dengan Google" di bawah.</div>

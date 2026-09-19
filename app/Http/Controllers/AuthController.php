@@ -60,13 +60,17 @@ class AuthController extends Controller
             return redirect()->to($user->isSuperAdmin() ? route('admin.dashboard') : $user->tenant->appUrl());
         }
 
-        $tenant = $this->lockedTenant($request);
+        // Login PIN Owner memakai kantor yang terkunci di sesi, jadi membuka
+        // halaman login kantor sekaligus mengunci sesi ke kantor tersebut.
+        // Tanpa ini kolom PIN tampil tapi selalu ditolak.
+        $request->session()->put('lock_tenant_id', $brand->id);
+        $tenant = $brand;
 
         return view('auth.login', [
             'tenant' => $tenant,
             'branding' => TenantBranding::forView($brand),
-            'officeName' => $tenant?->officeName() ?? $brand->officeName(),
-            'ownerHasPin' => (bool) ($tenant ?? $brand)->owner?->pin,
+            'officeName' => $brand->officeName(),
+            'ownerHasPin' => (bool) $brand->owner?->pin,
             'showSuperAdminTempLogin' => false,
             'inviter' => $this->pendingReferrer($request)?->officeName(),
         ]);
