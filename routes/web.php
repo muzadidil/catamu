@@ -102,6 +102,12 @@ $onMainDomain('cekin', 'cekin')->group(function () {
         Route::post('/', [CheckinController::class, 'store'])->middleware('throttle:cekin')->name('cekin.store');
         Route::get('/app/manifest.webmanifest', [AppController::class, 'manifest'])->name('app.manifest');
 
+        // Halaman login berlogo kantor. Formnya tetap mengirim ke rute login
+        // domain utama, jadi tidak ada logika autentikasi yang digandakan.
+        Route::get('/login', [AuthController::class, 'showTenantLogin'])->name('tenant.login');
+        Route::get('/branding/logo', [MediaController::class, 'brandingLogo'])->name('media.branding.logo');
+        Route::get('/branding/slides/{index}', [MediaController::class, 'brandingSlide'])->whereNumber('index')->name('media.branding.slide');
+
         Route::prefix('app')->middleware('tenant')->group(function () {
             Route::get('/', [AppController::class, 'index'])->name('app');
             Route::get('/service-worker.js', [AppController::class, 'serviceWorker'])->name('app.service-worker');

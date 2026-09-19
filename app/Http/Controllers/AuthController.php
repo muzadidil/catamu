@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\User;
+use App\Support\TenantBranding;
 use App\Support\TenantProvisioner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -30,6 +31,7 @@ class AuthController extends Controller
 
         return view('auth.login', [
             'tenant' => $tenant,
+            'branding' => null,
             'officeName' => $tenant?->officeName() ?? 'CATAMU',
             'ownerHasPin' => (bool) $tenant?->owner?->pin,
             // SEMENTARA (lihat loginSuperAdminTemp): cuma tampil selama Google
@@ -37,6 +39,35 @@ class AuthController extends Controller
             // ini otomatis hilang tanpa perlu diingat untuk dicabut manual.
             'showSuperAdminTempLogin' => ! $this->googleConfigured(),
             // Nama kantor pengajak, kalau tamu ini datang lewat link /join.
+            'inviter' => $this->pendingReferrer($request)?->officeName(),
+        ]);
+    }
+
+    /**
+     * Halaman login berlogo kantor di {slug}/login. Isinya sama dengan login
+     * umum — form tetap mengirim ke rute login domain utama — hanya logo,
+     * gambar, dan teks panel kirinya yang diambil dari branding kantor.
+     */
+    public function showTenantLogin(Request $request, string $slug): View|RedirectResponse
+    {
+        $brand = Tenant::resolveSlug($slug) ?? abort(404);
+
+        if ($brand->slug !== $slug) {
+            return redirect()->route('tenant.login', ['slug' => $brand->slug], 301);
+        }
+
+        if ($user = $request->user()) {
+            return redirect()->to($user->isSuperAdmin() ? route('admin.dashboard') : $user->tenant->appUrl());
+        }
+
+        $tenant = $this->lockedTenant($request);
+
+        return view('auth.login', [
+            'tenant' => $tenant,
+            'branding' => TenantBranding::forView($brand),
+            'officeName' => $tenant?->officeName() ?? $brand->officeName(),
+            'ownerHasPin' => (bool) ($tenant ?? $brand)->owner?->pin,
+            'showSuperAdminTempLogin' => false,
             'inviter' => $this->pendingReferrer($request)?->officeName(),
         ]);
     }

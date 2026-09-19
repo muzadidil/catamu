@@ -5,46 +5,55 @@
 @section('body')
 @php
   $mode = old('mode', 'owner');
+
+  // Tanpa branding kantor, halaman ini memakai identitas CATAMU dan tiga slide
+  // bawaan yang gambarnya diatur lewat kelas .auth-slide-1..3 di CSS.
+  $brandName = $branding['office'] ?? 'CATAMU';
+  $brandTagline = $branding ? 'Buku Tamu Digital' : 'Buku Tamu Digital';
+  $brandLogo = $branding['logoUrl'] ?? null;
+  $brandInitial = mb_strtoupper(mb_substr($branding ? $brandName : 'CATAMU', 0, 1));
+  $slides = collect($branding['slides'] ?? [])->filter(fn ($s) => $s['url'] || $s['title'] || $s['text'])->values();
+  $useDefaultSlides = $slides->isEmpty();
+  $defaultSlides = [
+    ['eyebrow' => 'Buku Tamu Digital', 'title' => 'Kelola Tamu Kantor Lebih Rapi', 'text' => 'Tinggalkan buku tamu kertas. Semua kunjungan tercatat otomatis dan bisa dipantau kapan saja.'],
+    ['eyebrow' => 'Ketertiban & Keamanan', 'title' => 'Registrasi & Check-in Otomatis', 'text' => 'Pencatatan data kunjungan, foto tamu, tanda tangan digital, dan departemen tujuan yang tersusun rapi.'],
+    ['eyebrow' => 'Laporan & Monitoring', 'title' => 'Data Kunjungan Siap Cetak', 'text' => 'Rekap tamu harian hingga bulanan tersimpan otomatis dan siap diunduh untuk kebutuhan laporan.'],
+  ];
+  $renderSlides = $useDefaultSlides ? $defaultSlides : $slides->all();
 @endphp
 <div class="app-lock show" id="appLock" aria-hidden="false">
   <section class="auth-visual" aria-hidden="true">
     <div class="auth-brand-top">
-      <span class="auth-brand-logo">C</span>
+      @if ($brandLogo)
+      <img class="auth-brand-logo auth-brand-logo-img" src="{{ $brandLogo }}" alt="Logo {{ $brandName }}" />
+      @else
+      <span class="auth-brand-logo">{{ $brandInitial }}</span>
+      @endif
       <div class="auth-brand-copy">
-        <strong>CATAMU</strong>
-        <span>Buku Tamu Digital</span>
+        <strong>{{ $brandName }}</strong>
+        <span>{{ $brandTagline }}</span>
       </div>
     </div>
 
     <div class="auth-slides" id="authSlides">
-      <article class="auth-slide auth-slide-1 active">
+      @foreach ($renderSlides as $i => $slide)
+      <article class="auth-slide {{ $useDefaultSlides ? 'auth-slide-'.($i + 1) : '' }} {{ $i === 0 ? 'active' : '' }}"
+        @if (! $useDefaultSlides && ($slide['url'] ?? null)) style="background-image:url('{{ $slide['url'] }}')" @endif>
         <div class="auth-slide-content">
-          <span class="auth-eyebrow"><i></i>Buku Tamu Digital</span>
-          <h1>Kelola Tamu Kantor Lebih Rapi</h1>
-          <p>Tinggalkan buku tamu kertas. Semua kunjungan tercatat otomatis dan bisa dipantau kapan saja.</p>
+          @if ($slide['eyebrow'])<span class="auth-eyebrow"><i></i>{{ $slide['eyebrow'] }}</span>@endif
+          @if ($slide['title'])<h1>{{ $slide['title'] }}</h1>@endif
+          @if ($slide['text'])<p>{{ $slide['text'] }}</p>@endif
         </div>
       </article>
-      <article class="auth-slide auth-slide-2">
-        <div class="auth-slide-content">
-          <span class="auth-eyebrow"><i></i>Ketertiban &amp; Keamanan</span>
-          <h1>Registrasi &amp; Check-in Otomatis</h1>
-          <p>Pencatatan data kunjungan, foto tamu, tanda tangan digital, dan departemen tujuan yang tersusun rapi.</p>
-        </div>
-      </article>
-      <article class="auth-slide auth-slide-3">
-        <div class="auth-slide-content">
-          <span class="auth-eyebrow"><i></i>Laporan &amp; Monitoring</span>
-          <h1>Data Kunjungan Siap Cetak</h1>
-          <p>Rekap tamu harian hingga bulanan tersimpan otomatis dan siap diunduh untuk kebutuhan laporan.</p>
-        </div>
-      </article>
+      @endforeach
     </div>
 
+    @if (count($renderSlides) > 1)
     <div class="auth-slider-controls">
       <div class="auth-dots" id="authDots">
-        <button class="auth-dot active" type="button" data-slide="0" aria-label="Slide 1"></button>
-        <button class="auth-dot" type="button" data-slide="1" aria-label="Slide 2"></button>
-        <button class="auth-dot" type="button" data-slide="2" aria-label="Slide 3"></button>
+        @foreach ($renderSlides as $i => $slide)
+        <button class="auth-dot {{ $i === 0 ? 'active' : '' }}" type="button" data-slide="{{ $i }}" aria-label="Slide {{ $i + 1 }}"></button>
+        @endforeach
       </div>
       <div class="auth-arrows">
         <button class="auth-arrow" id="authPrev" type="button" aria-label="Slide sebelumnya">‹</button>
@@ -52,20 +61,29 @@
       </div>
     </div>
     <div class="auth-progress"><span id="authProgress" class="run"></span></div>
+    @endif
   </section>
 
   <section class="auth-panel">
     <div class="lock-card">
       <div class="auth-mobile-brand">
-        <span class="auth-brand-logo">C</span>
+        @if ($brandLogo)
+        <img class="auth-brand-logo auth-brand-logo-img" src="{{ $brandLogo }}" alt="Logo {{ $brandName }}" />
+        @else
+        <span class="auth-brand-logo">{{ $brandInitial }}</span>
+        @endif
         <div>
-          <strong>CATAMU</strong>
-          <span>Buku Tamu Digital</span>
+          <strong>{{ $brandName }}</strong>
+          <span>{{ $brandTagline }}</span>
         </div>
       </div>
 
-      <div class="lock-logo">C</div>
-      <h2 id="lockOfficeName">{{ $tenant ? $officeName : 'Masuk ke CATAMU' }}</h2>
+      @if ($brandLogo)
+      <div class="lock-logo lock-logo-img"><img src="{{ $brandLogo }}" alt="Logo {{ $brandName }}" /></div>
+      @else
+      <div class="lock-logo">{{ $brandInitial }}</div>
+      @endif
+      <h2 id="lockOfficeName">{{ $tenant ? $officeName : ($branding ? 'Masuk ke '.$brandName : 'Masuk ke CATAMU') }}</h2>
       <p id="lockMessage">{{ $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
 
       @if ($inviter)
