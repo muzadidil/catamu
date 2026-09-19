@@ -8,6 +8,7 @@ use App\Support\ImageStore;
 use App\Support\TenantBranding;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -25,18 +26,20 @@ class BrandingController extends Controller
         $request->validate(['logo' => ['required', 'string']], ['logo.required' => 'Pilih gambar logo terlebih dahulu.']);
 
         $branding = TenantBranding::of($tenant);
-        $path = ImageStore::storeDataUrl(
-            $request->input('logo'),
-            ImageStore::tenantDirectory($tenant->id, 'branding'),
-            'logo',
-            2 * 1024 * 1024,
-            true,
-        );
+        $directory = ImageStore::tenantDirectory($tenant->id, 'branding');
+        $path = ImageStore::storeDataUrl($request->input('logo'), $directory, 'logo', 2 * 1024 * 1024, true);
 
-        ImageStore::delete($branding['logo']);
-        $branding['logo'] = $path;
+        // Ikon PWA/favicon dibuat sekali di sini, bukan tiap permintaan, supaya
+        // penyajiannya murni baca file.
+        $binary = Storage::disk('local')->get($path);
+        $icons = [
+            'icon192' => ImageStore::storeSquarePng($binary, $directory, 'logo', 192),
+            'icon512' => ImageStore::storeSquarePng($binary, $directory, 'logo', 512),
+        ];
 
-        return $this->respond($tenant, $branding);
+        $this->forgetLogo($branding);
+
+        return $this->respond($tenant, array_merge($branding, $icons, ['logo' => $path]));
     }
 
     public function destroyLogo(Request $request): JsonResponse
@@ -44,10 +47,16 @@ class BrandingController extends Controller
         $tenant = $this->authorizedTenant($request, 'menghapus logo kantor');
 
         $branding = TenantBranding::of($tenant);
-        ImageStore::delete($branding['logo']);
-        $branding['logo'] = null;
+        $this->forgetLogo($branding);
 
-        return $this->respond($tenant, $branding);
+        return $this->respond($tenant, array_merge($branding, ['logo' => null, 'icon192' => null, 'icon512' => null]));
+    }
+
+    private function forgetLogo(array $branding): void
+    {
+        foreach (['logo', 'icon192', 'icon512'] as $key) {
+            ImageStore::delete($branding[$key] ?? null);
+        }
     }
 
     public function storeSlide(Request $request): JsonResponse

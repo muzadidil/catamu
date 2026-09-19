@@ -70,6 +70,52 @@ class ImageStore
         return $path;
     }
 
+    /**
+     * Versi persegi untuk ikon PWA/favicon: gambar dimuat utuh di tengah kanvas
+     * transparan, jadi logo apa pun bentuknya tidak terpotong maupun gepeng.
+     */
+    public static function storeSquarePng(string $binary, string $directory, string $field, int $size): string
+    {
+        $source = @imagecreatefromstring($binary);
+        if (! $source) {
+            throw ValidationException::withMessages([$field => 'Gambar tidak dapat dibaca.']);
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        $scale = min($size / $width, $size / $height);
+        $targetWidth = max(1, (int) round($width * $scale));
+        $targetHeight = max(1, (int) round($height * $scale));
+
+        $canvas = imagecreatetruecolor($size, $size);
+        imagealphablending($canvas, false);
+        imagesavealpha($canvas, true);
+        imagefilledrectangle($canvas, 0, 0, $size, $size, imagecolorallocatealpha($canvas, 0, 0, 0, 127));
+        imagecopyresampled(
+            $canvas,
+            $source,
+            intdiv($size - $targetWidth, 2),
+            intdiv($size - $targetHeight, 2),
+            0,
+            0,
+            $targetWidth,
+            $targetHeight,
+            $width,
+            $height,
+        );
+        imagedestroy($source);
+
+        ob_start();
+        imagepng($canvas, null, 6);
+        $encoded = ob_get_clean();
+        imagedestroy($canvas);
+
+        $path = trim($directory, '/').'/'.Str::uuid().'.png';
+        Storage::disk('local')->put($path, $encoded);
+
+        return $path;
+    }
+
     public static function delete(?string $path): void
     {
         if ($path) {

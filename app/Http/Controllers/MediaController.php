@@ -63,6 +63,14 @@ class MediaController extends Controller
         return $this->publicFile($slides[$index]['image'] ?? null);
     }
 
+    /** Ikon PWA dan favicon kantor, dibuat saat logo diunggah. */
+    public function brandingIcon(string $slug, int $size): StreamedResponse
+    {
+        $branding = TenantBranding::of($this->tenantBySlug($slug));
+
+        return $this->publicFile($size >= 512 ? $branding['icon512'] : $branding['icon192']);
+    }
+
     private function tenantBySlug(string $slug): Tenant
     {
         return Tenant::resolveSlug($slug) ?? abort(404);

@@ -9,11 +9,13 @@
   @hasSection('manifest')
   <link rel="manifest" href="@yield('manifest')" />
   @endif
-  <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
-  <link rel="apple-touch-icon" href="{{ asset('icon-192.png') }}" />
-  <meta name="application-name" content="CATAMU" />
+  {{-- Halaman bertenant menimpa ini dengan logo kantor lewat @section('favicon'). --}}
+  @php ($faviconUrl = trim($__env->yieldContent('favicon')) ?: asset('icon-192.png'))
+  <link rel="icon" type="image/png" href="{{ $faviconUrl }}" />
+  <link rel="apple-touch-icon" href="{{ $faviconUrl }}" />
+  <meta name="application-name" content="@yield('app-name', 'CATAMU')" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="CATAMU" />
+  <meta name="apple-mobile-web-app-title" content="@yield('app-name', 'CATAMU')" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>@yield('title', 'CATAMU')</title>
   @stack('meta')

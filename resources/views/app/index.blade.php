@@ -3,6 +3,8 @@
 @section('body-class', $user->theme === 'dark' ? 'dark' : '')
 @section('app-url', $state['links']['appUrl'])
 @section('manifest', route('app.manifest', ['slug' => $tenant->slug]))
+@section('favicon', \App\Support\TenantBranding::iconUrl($tenant) ?? '')
+@section('app-name', $tenant->officeName())
 
 @section('body')
 <div class="app">

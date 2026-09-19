@@ -107,6 +107,7 @@ $onMainDomain('cekin', 'cekin')->group(function () {
         Route::get('/login', [AuthController::class, 'showTenantLogin'])->name('tenant.login');
         Route::get('/branding/logo', [MediaController::class, 'brandingLogo'])->name('media.branding.logo');
         Route::get('/branding/slides/{index}', [MediaController::class, 'brandingSlide'])->whereNumber('index')->name('media.branding.slide');
+        Route::get('/branding/icon-{size}.png', [MediaController::class, 'brandingIcon'])->whereIn('size', ['192', '512'])->name('media.branding.icon');
 
         Route::prefix('app')->middleware('tenant')->group(function () {
             Route::get('/', [AppController::class, 'index'])->name('app');

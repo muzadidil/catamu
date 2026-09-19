@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Support\ClientState;
+use App\Support\TenantBranding;
 use chillerlan\QRCode\Output\QRMarkupSVG;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
@@ -46,7 +47,12 @@ class AppController extends Controller
             'background_color' => '#f5f7fb',
             'theme_color' => '#b91c1c',
             'lang' => 'id',
-            'icons' => [
+            // Logo kantor dipasang tanpa "maskable": logo unggahan dibiarkan utuh
+            // di kanvas transparan, jadi kalau dipangkas Android bisa terpotong.
+            'icons' => TenantBranding::iconUrl($tenant, 192) ? [
+                ['src' => TenantBranding::iconUrl($tenant, 192), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any'],
+                ['src' => TenantBranding::iconUrl($tenant, 512), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any'],
+            ] : [
                 ['src' => asset('icon-192.png'), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
                 ['src' => asset('icon-512.png'), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
             ],

@@ -1,6 +1,11 @@
 <aside class="sidebar" id="sidebar">
   <div class="brand">
+    @php ($brandLogoUrl = \App\Support\TenantBranding::forView($tenant)['logoUrl'])
+    @if ($brandLogoUrl)
+    <div class="brand-logo brand-logo-img"><img src="{{ $brandLogoUrl }}" alt="Logo {{ $tenant->officeName() }}" /></div>
+    @else
     <div class="brand-logo">CA</div>
+    @endif
     <div>
       <h1>CATAMU</h1>
       <small id="brandOffice">Kantor Utama</small>

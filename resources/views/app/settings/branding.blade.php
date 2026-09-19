@@ -7,7 +7,7 @@
   </div>
 
   <div class="settings-card">
-    <div class="settings-card-head"><div><h3>Logo Kantor</h3><p>Tampil di halaman login kantor. Disarankan PNG latar transparan, sisi terpanjang minimal 256 piksel.</p></div></div>
+    <div class="settings-card-head"><div><h3>Logo Kantor</h3><p>Dipakai di halaman login kantor, sidebar aplikasi, favicon tab browser, dan ikon aplikasi saat dipasang di HP. Disarankan PNG latar transparan dan bentuk persegi, sisi terpanjang minimal 512 piksel.</p></div></div>
     <div class="settings-card-body">
       <div class="branding-logo-row">
         <div class="branding-logo-preview" id="brandingLogoPreview"><span id="brandingLogoInitial">K</span></div>

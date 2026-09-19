@@ -9,6 +9,8 @@
 @endphp
 
 @section('title', 'Cek-in Tamu • '.$office)
+@section('favicon', \App\Support\TenantBranding::iconUrl($tenant) ?? '')
+@section('app-name', $office)
 @push('meta')
   <meta name="description" content="Halaman cek-in tamu {{ $office }}. Isi data kunjungan Anda di sini." />
   <meta name="robots" content="noindex" />

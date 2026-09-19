@@ -39,7 +39,21 @@ class TenantBranding
             ];
         }
 
-        return ['logo' => self::path($stored['logo'] ?? null), 'slides' => $slides];
+        return [
+            'logo' => self::path($stored['logo'] ?? null),
+            'icon192' => self::path($stored['icon192'] ?? null),
+            'icon512' => self::path($stored['icon512'] ?? null),
+            'slides' => $slides,
+        ];
+    }
+
+    /** Ikon PWA/favicon kantor; null berarti pakai ikon bawaan CATAMU. */
+    public static function iconUrl(Tenant $tenant, int $size = 192): ?string
+    {
+        $branding = self::of($tenant);
+        $path = $size >= 512 ? $branding['icon512'] : $branding['icon192'];
+
+        return $path ? route('media.branding.icon', ['slug' => $tenant->slug, 'size' => $size, 'v' => self::version($path)]) : null;
     }
 
     public static function save(Tenant $tenant, array $branding): array
@@ -71,6 +85,7 @@ class TenantBranding
             'office' => $tenant->officeName(),
             'slug' => $tenant->slug,
             'logoUrl' => $branding['logo'] ? self::logoUrl($tenant, $branding['logo']) : null,
+            'iconUrl' => self::iconUrl($tenant),
             'loginUrl' => route('tenant.login', ['slug' => $tenant->slug]),
             'slides' => $slides,
         ];

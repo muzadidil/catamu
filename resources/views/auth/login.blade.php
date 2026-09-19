@@ -1,6 +1,10 @@
 @extends('layouts.catamu')
 
 @section('title', 'Masuk • CATAMU')
+@section('favicon', $branding['iconUrl'] ?? '')
+@if ($branding)
+@section('app-name', $branding['office'])
+@endif
 
 @section('body')
 @php
