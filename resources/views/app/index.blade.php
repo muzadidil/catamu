@@ -38,6 +38,8 @@
 
           @include('app.settings.application')
 
+          @include('app.settings.branding')
+
           @include('app.settings.notifications')
 
           @include('app.settings.install')

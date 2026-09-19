@@ -597,6 +597,31 @@ body.dark .star-btn.active{background:#33260b}
   .auth-mobile-brand strong{display:block;font-size:16px}
   .auth-mobile-brand span{display:block;font-size:11px;opacity:.85;margin-top:2px}
 }
+/* Pengaturan logo & halaman login kantor */
+.branding-logo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.branding-logo-preview{width:86px;height:86px;flex:0 0 auto;border-radius:22px;border:1px solid var(--line);background:var(--surface-2) center/contain no-repeat;display:grid;place-items:center;color:var(--primary);font-size:32px;font-weight:900}
+.branding-logo-preview.has-image{background-color:var(--surface);padding:8px}
+.branding-logo-preview.has-image span{display:none}
+.branding-logo-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+.branding-logo-actions .hint{width:100%;margin:0}
+.branding-slides{display:grid;gap:12px}
+.branding-slide{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
+.branding-slide-media{position:relative;align-self:start;aspect-ratio:16/10;border-radius:12px;border:1px dashed var(--line-strong);background:var(--surface) center/cover no-repeat;display:grid;place-items:center}
+.branding-slide-media.has-image{border-style:solid}
+.branding-slide-media.has-image .btn{background:rgba(255,255,255,.92);border-color:transparent}
+.branding-slide-fields{display:grid;gap:10px;min-width:0}
+.branding-slide-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.branding-slide-index{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.branding-slide-order{display:flex;gap:6px}
+.branding-slide-order .icon-btn{width:30px;height:30px;font-size:14px;font-weight:800}
+.branding-slide-order .icon-btn[disabled]{opacity:.4;cursor:not-allowed}
+.branding-slide-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.branding-slide-fields textarea.field{min-height:60px;resize:vertical;padding:10px 12px}
+@media(max-width:720px){
+  .branding-slide{grid-template-columns:1fr}
+  .branding-slide-media{aspect-ratio:16/9}
+}
+
 .status-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:850}
 .status-pill.active{background:var(--success-soft);color:var(--success)}
 .status-pill.inactive{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}

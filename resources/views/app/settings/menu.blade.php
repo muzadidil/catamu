@@ -33,6 +33,10 @@
       <span class="settings-item-icon"><svg viewBox="0 0 24 24"><path d="M4 7h10"/><circle cx="17" cy="7" r="2"/><path d="M20 17H10"/><circle cx="7" cy="17" r="2"/><path d="M4 12h5"/><circle cx="12" cy="12" r="2"/><path d="M15 12h5"/></svg></span>
       <span class="settings-item-main"><span class="settings-item-text">Aplikasi</span><span class="settings-item-note">Kantor, tampilan, tanggal &amp; jam</span></span><span class="settings-item-arrow">›</span>
     </button>
+    <button class="settings-item" type="button" data-setting-action="branding">
+      <span class="settings-item-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-4 3 2.5L15 10l6 5"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></span>
+      <span class="settings-item-main"><span class="settings-item-text">Logo &amp; Halaman Login</span><span class="settings-item-note" id="brandingMenuNote">Logo kantor &amp; gambar halaman login</span></span><span class="settings-item-arrow">›</span>
+    </button>
     <button class="settings-item" type="button" data-setting-action="guest-fields">
       <span class="settings-item-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="m15 16 2 2 3-4"/></svg></span>
       <span class="settings-item-main"><span class="settings-item-text">Atur Data Tamu</span><span class="settings-item-note">Atur field Registrasi Tamu</span></span><span class="settings-item-arrow">›</span>

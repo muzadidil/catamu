@@ -106,6 +106,7 @@
   const profileDefaults = {name:'Administrator',email:'',phone:'',hasPin:false,photo:''};
   const subscriptionDefaults = {plan:'Trial 3 Hari',status:'trial',trialStartedAt:null,trialExpiresAt:null,expiresAt:null,activatedAt:null,pendingPayment:null};
   const notificationDefaults = {inApp:true,browser:false,checkIn:true,checkOut:true,updates:true};
+  const BRANDING_MAX_SLIDES = 6; // harus sama dengan TenantBranding::MAX_SLIDES
 
   let guests = Array.isArray(BOOT.guests) ? BOOT.guests : [];
   let settings = {...defaults, ...(BOOT.settings||{})};
@@ -120,6 +121,7 @@
   let feedbacks = Array.isArray(BOOT.feedbacks) ? BOOT.feedbacks : [];
   let rating = {score:0,comment:'',updatedAt:null,...(BOOT.rating||{})};
   let affiliate = BOOT.affiliate || null;
+  let branding = BOOT.branding || null;
   let notifications = Array.isArray(BOOT.notifications) ? BOOT.notifications : [];
   let notificationPrefs = {...notificationDefaults, ...(BOOT.notificationPrefs||{})};
   const seenNotificationIds = new Set(notifications.map(n=>n.id));
@@ -589,7 +591,7 @@
     setHidden('[data-setting-action="affiliate"]',!access.affiliateManage);
     setHidden('[data-setting-action="account"]',!access.accountManage);
     setHidden('[data-setting-action="team"]',!access.teamManage);
-    ['departments','guest-fields','application','notifications'].forEach(view=>setHidden(`[data-setting-action="${view}"]`,!access.settings));
+    ['departments','guest-fields','application','branding','notifications'].forEach(view=>setHidden(`[data-setting-action="${view}"]`,!access.settings));
     setHidden('.requires-guest-write',!(access.guestsWrite&&writable));
     setHidden('.requires-team-manage',!(access.teamManage&&writable));
     setHidden('.requires-settings-write',!(access.settings&&writable));
@@ -672,6 +674,7 @@
     departments:'settingsDepartmentsView',
     'guest-fields':'settingsGuestFieldsView',
     application:'settingsApplicationView',
+    branding:'settingsBrandingView',
     notifications:'settingsNotificationsView',
     'download-desktop':'settingsDesktopView',
     contact:'settingsContactView',
@@ -688,6 +691,7 @@
     departments:['Departemen','Kelola departemen tujuan kunjungan tamu.'],
     'guest-fields':['Atur Data Tamu','Atur field Registrasi Tamu.'],
     application:['Pengaturan Aplikasi','Identitas kantor dan preferensi tampilan.'],
+    branding:['Logo & Halaman Login','Logo kantor dan gambar halaman login kantor.'],
     notifications:['Notifikasi','Atur notifikasi aplikasi dan perangkat.'],
     'download-desktop':['Instal di HP','Pasang CATAMU di perangkat.'],
     contact:['Kontak Kami','Hubungi kontak kantor yang tersimpan pada aplikasi.'],
@@ -730,6 +734,7 @@
     if(view==='departments') renderDepartments();
     if(view==='guest-fields') renderGuestFieldSettingsForm();
     if(view==='application') applySettings();
+    if(view==='branding') renderBranding();
     if(view==='download-desktop') renderPwaInstallState();
     if(view==='notifications') renderNotificationSettings();
     if(view==='contact') renderContact();
@@ -884,6 +889,138 @@
       renderSettingsMenuNotes();
       toast('Pengajuan pencairan terkirim. Menunggu diproses admin.');
     }catch(error){ reportApiError(error); }
+  }
+
+  function brandingReady(){ return !!branding && !!$('settingsBrandingView'); }
+
+  function renderBranding(){
+    if(!brandingReady()) return;
+    const bare=url=>String(url||'').replace(/^https?:\/\//,'');
+    const preview=$('brandingLogoPreview');
+
+    preview.classList.toggle('has-image',!!branding.logoUrl);
+    preview.style.backgroundImage=branding.logoUrl?`url('${branding.logoUrl}')`:'';
+    $('brandingLogoInitial').textContent=(branding.office||'K').trim().charAt(0).toUpperCase();
+    $('brandingLogoRemoveBtn').hidden=!branding.logoUrl;
+    $('brandingLoginUrl').textContent=bare(branding.loginUrl);
+    $('brandingOpenBtn').href=branding.loginUrl||'#';
+
+    renderBrandingSlides();
+  }
+
+  function renderBrandingSlides(){
+    if(!brandingReady()) return;
+    const slides=Array.isArray(branding.slides)?branding.slides:[];
+    const list=$('brandingSlideList');
+    const total=slides.length;
+
+    $('brandingSlideCountText').textContent=total
+      ? `${total} slide aktif di halaman login kantor.`
+      : 'Belum ada slide. Halaman login memakai tampilan bawaan CATAMU.';
+    $('brandingSlideAddBtn').disabled=total>=BRANDING_MAX_SLIDES;
+
+    list.innerHTML='';
+    slides.forEach((slide,index)=>{
+      const card=document.createElement('div');
+      card.className='branding-slide';
+      card.innerHTML=`
+        <div class="branding-slide-media${slide.url?' has-image':''}"${slide.url?` style="background-image:url('${slide.url}')"`:''}>
+          <button class="btn btn-compact" type="button" data-branding-image="${index}">${slide.url?'Ganti Gambar':'Pilih Gambar'}</button>
+        </div>
+        <div class="branding-slide-fields">
+          <div class="branding-slide-head">
+            <span class="branding-slide-index">Slide ${index+1}</span>
+            <div class="branding-slide-order">
+              <button class="icon-btn" type="button" data-branding-move="${index}" data-branding-dir="-1" aria-label="Naikkan slide" ${index===0?'disabled':''}>↑</button>
+              <button class="icon-btn" type="button" data-branding-move="${index}" data-branding-dir="1" aria-label="Turunkan slide" ${index===total-1?'disabled':''}>↓</button>
+            </div>
+          </div>
+          <div class="form-group"><label>Label Kecil</label><input class="field" data-branding-field="eyebrow" data-branding-slide="${index}" maxlength="40" placeholder="Contoh: Ketertiban & Keamanan" /></div>
+          <div class="form-group"><label>Judul</label><input class="field" data-branding-field="title" data-branding-slide="${index}" maxlength="80" placeholder="Contoh: Registrasi & Check-in Otomatis" /></div>
+          <div class="form-group"><label>Deskripsi</label><textarea class="field" data-branding-field="text" data-branding-slide="${index}" maxlength="220" rows="2" placeholder="Kalimat singkat di bawah judul"></textarea></div>
+          <div class="branding-slide-actions">
+            <button class="btn" type="button" data-branding-remove="${index}">Hapus</button>
+            <button class="btn btn-primary" type="button" data-branding-save="${index}">Simpan</button>
+          </div>
+        </div>`;
+      card.querySelector('[data-branding-field="eyebrow"]').value=slide.eyebrow||'';
+      card.querySelector('[data-branding-field="title"]').value=slide.title||'';
+      card.querySelector('[data-branding-field="text"]').value=slide.text||'';
+      list.appendChild(card);
+    });
+  }
+
+  function brandingSlidePayload(index){
+    const pick=field=>document.querySelector(`[data-branding-field="${field}"][data-branding-slide="${index}"]`);
+
+    return {
+      eyebrow:pick('eyebrow')?.value.trim()||'',
+      title:pick('title')?.value.trim()||'',
+      text:pick('text')?.value.trim()||''
+    };
+  }
+
+  async function applyBranding(button,run,message){
+    if(!brandingReady() || !guardCapability('settings','mengatur logo dan halaman login')) return;
+    try{
+      const data=await busy(button,run);
+      branding=data.branding;
+      renderBranding();
+      if(message) toast(message);
+    }catch(error){ reportApiError(error); }
+  }
+
+  /** Dipakai logo maupun gambar slide: buka pemilih file lalu kirim sebagai data URL. */
+  function pickBrandingImage(onPicked){
+    const input=$('brandingLogoInput');
+    input.value='';
+    input.onchange=async()=>{
+      const file=input.files&&input.files[0];
+      if(!file) return;
+      try{ await onPicked(await readFileAsDataUrl(file)); }
+      catch(error){ reportApiError(error); }
+      finally{ input.value=''; }
+    };
+    input.click();
+  }
+
+  function uploadBrandingLogo(){
+    pickBrandingImage(logo=>applyBranding($('brandingLogoPickBtn'),()=>api('POST','/api/branding/logo',{logo}),'Logo kantor diperbarui.'));
+  }
+
+  function uploadBrandingSlideImage(index){
+    pickBrandingImage(image=>applyBranding(
+      document.querySelector(`[data-branding-image="${index}"]`),
+      ()=>api('PUT',`/api/branding/slides/${index}`,{...brandingSlidePayload(index),image}),
+      'Gambar slide diperbarui.'
+    ));
+  }
+
+  function moveBrandingSlide(index,direction){
+    const target=index+direction;
+    const order=(branding.slides||[]).map((_,i)=>i);
+    if(target<0 || target>=order.length) return;
+    [order[index],order[target]]=[order[target],order[index]];
+    applyBranding(null,()=>api('PUT','/api/branding/slides/order',{order}),'Urutan slide disimpan.');
+  }
+
+  function removeBrandingSlide(index,button){
+    if(!confirm(`Hapus slide ${index+1} dari halaman login kantor?`)) return;
+    applyBranding(button,()=>api('DELETE',`/api/branding/slides/${index}`),'Slide dihapus.');
+  }
+
+  function handleBrandingClick(event){
+    const target=event.target.closest('[data-branding-image],[data-branding-move],[data-branding-remove],[data-branding-save]');
+    if(!target) return;
+    const { brandingImage, brandingMove, brandingDir, brandingRemove, brandingSave }=target.dataset;
+
+    if(brandingImage!==undefined) uploadBrandingSlideImage(Number(brandingImage));
+    else if(brandingMove!==undefined) moveBrandingSlide(Number(brandingMove),Number(brandingDir));
+    else if(brandingRemove!==undefined) removeBrandingSlide(Number(brandingRemove),target);
+    else if(brandingSave!==undefined){
+      const index=Number(brandingSave);
+      applyBranding(target,()=>api('PUT',`/api/branding/slides/${index}`,brandingSlidePayload(index)),'Slide disimpan.');
+    }
   }
 
   function renderSettingsMenuNotes(){
@@ -2526,6 +2663,21 @@
   if($('affCodeSaveBtn')) $('affCodeSaveBtn').addEventListener('click',()=>saveAffiliateCode($('affCodeSaveBtn')));
   if($('affAccountForm')) $('affAccountForm').addEventListener('submit',saveAffiliateAccount);
   if($('affPayoutForm')) $('affPayoutForm').addEventListener('submit',submitAffiliatePayout);
+  if($('brandingLogoPickBtn')) $('brandingLogoPickBtn').addEventListener('click',uploadBrandingLogo);
+  if($('brandingLogoRemoveBtn')) $('brandingLogoRemoveBtn').addEventListener('click',()=>{
+    if(confirm('Hapus logo kantor? Halaman login kembali memakai inisial nama kantor.')) applyBranding($('brandingLogoRemoveBtn'),()=>api('DELETE','/api/branding/logo'),'Logo kantor dihapus.');
+  });
+  if($('brandingSlideAddBtn')) $('brandingSlideAddBtn').addEventListener('click',()=>applyBranding($('brandingSlideAddBtn'),()=>api('POST','/api/branding/slides',{eyebrow:'',title:'',text:''}),'Slide ditambahkan. Lengkapi gambar dan teksnya.'));
+  if($('brandingSlideList')) $('brandingSlideList').addEventListener('click',handleBrandingClick);
+  if($('brandingCopyBtn')) $('brandingCopyBtn').addEventListener('click',async()=>{
+    if(!brandingReady()) return;
+    try{
+      await navigator.clipboard.writeText(branding.loginUrl);
+      toast('Link halaman login kantor disalin.');
+    }catch{
+      toast(`Salin manual: ${branding.loginUrl}`);
+    }
+  });
   document.querySelectorAll('[data-plan-days]').forEach(btn=>btn.addEventListener('click',()=>openQrisRenewalModal(Number(btn.dataset.planDays),btn.dataset.planName)));
   $('chooseQrisPaymentProofBtn').addEventListener('click',()=>{
     const input=$('qrisPaymentProofInput');

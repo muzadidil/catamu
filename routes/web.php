@@ -134,6 +134,13 @@ $onMainDomain('cekin', 'cekin')->group(function () {
                 Route::put('/settings/application', [Api\SettingsController::class, 'updateApplication']);
                 Route::put('/settings/guest-fields', [Api\SettingsController::class, 'updateGuestFields']);
                 Route::put('/settings/notifications', [Api\SettingsController::class, 'updateNotifications']);
+
+                Route::post('/branding/logo', [Api\BrandingController::class, 'updateLogo']);
+                Route::delete('/branding/logo', [Api\BrandingController::class, 'destroyLogo']);
+                Route::post('/branding/slides', [Api\BrandingController::class, 'storeSlide']);
+                Route::put('/branding/slides/order', [Api\BrandingController::class, 'reorderSlides']);
+                Route::put('/branding/slides/{index}', [Api\BrandingController::class, 'updateSlide'])->whereNumber('index');
+                Route::delete('/branding/slides/{index}', [Api\BrandingController::class, 'destroySlide'])->whereNumber('index');
                 Route::put('/me/theme', [Api\SettingsController::class, 'updateTheme']);
 
                 Route::put('/account', [Api\AccountController::class, 'update']);
