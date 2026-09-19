@@ -88,6 +88,14 @@
 </section>
 
 <section class="ad-card">
+  <header class="ad-card-head">
+    <div><h2>Masukan &amp; Rating</h2><p>Saran, laporan masalah, dan penilaian yang dikirim kantor</p></div>
+    <span class="ad-card-icon tone-brand">@include('admin.partials.icon', ['name' => 'chat'])</span>
+  </header>
+  <div class="ad-form-actions"><a class="ad-btn ad-btn--primary" href="{{ route('admin.feedbacks') }}">Buka Masukan &amp; Rating</a></div>
+</section>
+
+<section class="ad-card">
   <header class="ad-card-head"><div><h2>Paket langganan</h2><p>Paket yang tampil di aplikasi kantor dan landing page</p></div></header>
   <div class="ad-plan">
     <div class="ad-plan-main">
