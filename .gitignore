@@ -22,3 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Repo lain yang kebetulan berada di dalam folder ini, bukan bagian dari CATAMU.
+/TODO
