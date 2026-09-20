@@ -25,3 +25,9 @@ Thumbs.db
 
 # Repo lain yang kebetulan berada di dalam folder ini, bukan bagian dari CATAMU.
 /TODO
+
+# Docroot subdomain adatamu.id. Hostinger menyarangkan subdomain di dalam folder
+# domain induknya, jadi kedua symlink ini dibuat di server dan menunjuk balik ke
+# root aplikasi ini. Lihat CATATAN-DEPLOY-ADATAMU.md langkah 4.
+/admin
+/cekin
