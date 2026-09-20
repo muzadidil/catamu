@@ -3,6 +3,8 @@
 .env
 .env.backup
 .env.production
+# Cadangan .env yang dibuat manual di server sebelum mengubah konfigurasi.
+.env.bak*
 .phpactor.json
 .phpunit.result.cache
 /.fleet
