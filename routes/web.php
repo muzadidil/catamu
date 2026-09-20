@@ -52,6 +52,17 @@ Route::domain($domains['main'])->group(function () {
 });
 
 /*
+| admin.catamu.com/login — pintu masuk backoffice. Di luar middleware
+| 'superadmin' supaya domain admin punya halaman sendiri dan tidak melempar
+| pengunjung ke login domain utama. Formnya mengirim ke domain ini juga, jadi
+| tidak bergantung pada cookie sesi yang terbagi antar subdomain.
+*/
+$onMainDomain('admin', 'admin')->name('admin.')->group(function () {
+    Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'loginSuperAdminTemp'])->name('login.submit');
+});
+
+/*
 | admin.catamu.com — backoffice super admin (fallback: catamu.com/admin)
 */
 $onMainDomain('admin', 'admin')->middleware('superadmin')->name('admin.')->group(function () {

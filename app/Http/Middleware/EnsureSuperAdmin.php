@@ -13,7 +13,9 @@ class EnsureSuperAdmin
         $user = $request->user();
 
         if (! $user) {
-            return redirect()->route('login');
+            // Sengaja ke halaman masuk milik domain admin sendiri, bukan ke
+            // login domain utama, supaya backoffice punya alamat yang utuh.
+            return redirect()->route('admin.login');
         }
 
         if (! $user->isSuperAdmin()) {

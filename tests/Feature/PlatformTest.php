@@ -233,9 +233,24 @@ class PlatformTest extends TestCase
     {
         $owner = $this->createOwner();
 
-        $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
+        // Tamu diarahkan ke pintu masuk milik domain admin sendiri, bukan ke
+        // login domain utama, supaya backoffice punya alamat yang utuh.
+        $this->get(route('admin.dashboard'))->assertRedirect(route('admin.login'));
         $this->actingAs($owner)->get(route('admin.dashboard'))->assertForbidden();
         $this->post(route('admin.settings.trial'), ['trial_days' => 30])->assertForbidden();
         $this->assertSame(3, PlatformSetting::trialDays());
+    }
+
+    public function test_backoffice_has_its_own_login_page(): void
+    {
+        $this->get(route('admin.login'))
+            ->assertOk()
+            ->assertSee('Masuk Super Admin')
+            ->assertSee(route('admin.login.submit'));
+
+        // Sudah masuk sebagai super admin: langsung ke dasbor, tidak disuruh
+        // mengisi form lagi.
+        $admin = $this->superAdmin();
+        $this->actingAs($admin)->get(route('admin.login'))->assertRedirect(route('admin.dashboard'));
     }
 }

@@ -44,6 +44,22 @@ class AuthController extends Controller
     }
 
     /**
+     * Pintu masuk tersendiri untuk domain admin. Tanpa ini, membuka
+     * admin.<domain> saat belum masuk akan melempar pengunjung ke halaman login
+     * domain utama, sehingga backoffice terasa tidak punya alamat sendiri.
+     */
+    public function showAdminLogin(Request $request): View|RedirectResponse
+    {
+        if ($user = $request->user()) {
+            return redirect()->to($user->isSuperAdmin() ? route('admin.dashboard') : $user->tenant->appUrl());
+        }
+
+        return view('admin.login', [
+            'googleConfigured' => $this->googleConfigured(),
+        ]);
+    }
+
+    /**
      * Halaman login berlogo kantor di {slug}/login. Isinya sama dengan login
      * umum — form tetap mengirim ke rute login domain utama — hanya logo,
      * gambar, dan teks panel kirinya yang diambil dari branding kantor.
@@ -192,8 +208,13 @@ class AuthController extends Controller
      */
     public function loginSuperAdminTemp(Request $request): RedirectResponse
     {
+        // Form ini dipasang di dua tempat: tab "Super Admin" di halaman login
+        // domain utama, dan halaman masuk tersendiri di domain admin. Kegagalan
+        // harus kembali ke halaman asalnya, bukan selalu ke domain utama.
+        $loginRoute = $request->routeIs('admin.*') ? 'admin.login' : 'login';
+
         if ($this->googleConfigured()) {
-            return redirect()->route('login');
+            return redirect()->route($loginRoute);
         }
 
         $data = $request->validate([
@@ -208,7 +229,7 @@ class AuthController extends Controller
         $key = 'superadmin-temp-login:'.sha1($email.'|'.$request->ip());
 
         if (RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS)) {
-            return redirect()->route('login')
+            return redirect()->route($loginRoute)
                 ->withInput(['mode' => 'superadmin'])
                 ->with('error', 'Terlalu banyak percobaan masuk. Coba lagi dalam '.RateLimiter::availableIn($key).' detik.');
         }
@@ -221,7 +242,7 @@ class AuthController extends Controller
             || ! Hash::check($data['password'], $admin->password)) {
             RateLimiter::hit($key, self::DECAY_SECONDS);
 
-            return redirect()->route('login')
+            return redirect()->route($loginRoute)
                 ->withInput(['mode' => 'superadmin'])
                 ->with('error', 'Email atau password super admin tidak sesuai.');
         }
