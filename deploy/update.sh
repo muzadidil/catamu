@@ -57,4 +57,8 @@ $COMPOSER_CMD install --no-dev --optimize-autoloader --no-interaction
 "$PHP_BIN" artisan view:clear
 "$PHP_BIN" artisan cache:clear
 
+# Dinyalakan di sini supaya konfirmasinya terlihat. Trap di atas tetap ada
+# sebagai jaring pengaman kalau salah satu perintah di atas gagal.
+"$PHP_BIN" artisan up
+
 echo "==> Selesai. Versi sekarang: $(git log --oneline -1)"
