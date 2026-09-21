@@ -47,6 +47,7 @@
               <div>
                 <a class="ad-entity-name" href="{{ route('admin.tenants.show', $tenant) }}">{{ $tenant->officeName() }}</a>
                 <small>ID {{ $tenant->id }} • <a href="{{ $tenant->checkinUrl() }}" target="_blank" rel="noopener">/{{ $tenant->slug }}</a></small>
+                <small class="ad-affcode" title="Kode afiliasi">Kode: @if ($tenant->referral_code)<b>{{ $tenant->referral_code }}</b> • {{ Format::number($tenant->referrals_count) }} diajak @else <i>belum dibuat</i> @endif</small>
               </div>
             </div>
           </td>

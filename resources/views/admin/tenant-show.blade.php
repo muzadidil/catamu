@@ -89,6 +89,65 @@
 
 <div class="ad-grid-2">
   <section class="ad-card">
+    <header class="ad-card-head"><div><h2>Afiliasi</h2><p>Kode undangan dan saldo komisi kantor ini</p></div></header>
+    <dl class="ad-dl">
+      <div><dt>Kode afiliasi</dt><dd>@if ($tenant->referral_code)<b class="ad-code">{{ $tenant->referral_code }}</b>@else<span class="ad-sub">Belum dibuat. Muncul otomatis saat Owner membuka menu Afiliasi.</span>@endif</dd></div>
+      <div><dt>Link undangan</dt><dd>@if ($affiliate['link'])<a class="ad-link" href="{{ $affiliate['link'] }}" target="_blank" rel="noopener">{{ preg_replace('#^https?://#', '', $affiliate['link']) }}</a>@else - @endif</dd></div>
+      <div><dt>Link dibuka</dt><dd>{{ Format::number($tenant->referral_visits) }} kali</dd></div>
+      <div><dt>Diajak oleh</dt><dd>@if ($tenant->referrer)<a class="ad-link" href="{{ route('admin.tenants.show', $tenant->referrer) }}">{{ $tenant->referrer->officeName() }}</a>@else - @endif</dd></div>
+      <div><dt>Komisi terkumpul</dt><dd class="ad-num">{{ Format::rupiah($affiliate['balance']['earned']) }}</dd></div>
+      <div><dt>Sudah dicairkan</dt><dd class="ad-num">{{ Format::rupiah($affiliate['balance']['paid']) }}</dd></div>
+      <div><dt>Sedang diajukan</dt><dd class="ad-num">{{ Format::rupiah($affiliate['balance']['onHold']) }}</dd></div>
+      <div><dt>Saldo tersedia</dt><dd class="ad-num"><b>{{ Format::rupiah($affiliate['balance']['available']) }}</b></dd></div>
+      <div><dt>Rekening pencairan</dt><dd>@if ($tenant->hasPayoutAccount()){{ $tenant->payout_bank }} {{ $tenant->payout_account }} a.n. {{ $tenant->payout_name }}@else Belum diisi @endif</dd></div>
+    </dl>
+  </section>
+
+  <section class="ad-card">
+    <header class="ad-card-head"><div><h2>Daftar terundang</h2><p>{{ Format::number($affiliate['referrals']->count()) }} kantor mendaftar lewat link kantor ini</p></div></header>
+    @forelse ($affiliate['referrals'] as $office)
+    <a class="ad-list-row is-link" href="{{ route('admin.tenants.show', $office) }}">
+      <span class="ad-avatar ad-avatar--soft">{{ Format::initials($office->officeName()) }}</span>
+      <div class="ad-list-main"><b>{{ $office->officeName() }}</b><small>Mendaftar {{ Format::date($office->created_at, 'd M Y') }}</small></div>
+      <div class="ad-badges">@include('admin.partials.status', ['tenant' => $office])</div>
+    </a>
+    @empty
+    <div class="ad-empty">@include('admin.partials.icon', ['name' => 'link'])<b>Belum ada yang diundang</b><span>Kantor yang mendaftar lewat link afiliasi kantor ini akan muncul di sini.</span></div>
+    @endforelse
+  </section>
+</div>
+
+<section class="ad-card ad-card--flush">
+  <header class="ad-card-head"><div><h2>Riwayat pencairan komisi</h2><p>{{ Format::number($affiliate['payouts']->count()) }} pengajuan tercatat</p></div></header>
+  @if ($affiliate['payouts']->isEmpty())
+  <div class="ad-empty">@include('admin.partials.icon', ['name' => 'wallet'])<b>Belum ada pencairan</b><span>Pengajuan tarik komisi dari kantor ini akan muncul di sini.</span></div>
+  @else
+  <div class="ad-table-wrap">
+    <table class="ad-table">
+      <thead><tr><th>Diajukan</th><th>Nominal</th><th>Rekening tujuan</th><th>Status</th><th>Diproses</th></tr></thead>
+      <tbody>
+      @foreach ($affiliate['payouts'] as $payout)
+        <tr>
+          <td data-label="Diajukan"><span class="ad-text">{{ Format::date($payout->created_at, 'd M Y, H:i') }}</span></td>
+          <td data-label="Nominal"><span class="ad-text ad-num">{{ Format::rupiah($payout->amount) }}</span></td>
+          <td data-label="Rekening"><span class="ad-text">{{ $payout->bank }} {{ $payout->account }}</span><small class="ad-sub">a.n. {{ $payout->account_name }}</small></td>
+          <td data-label="Status">
+            @if ($payout->status === 'approved')<span class="ad-badge ad-badge--success">{{ $payout->statusLabel() }}</span>
+            @elseif ($payout->status === 'rejected')<span class="ad-badge ad-badge--danger">{{ $payout->statusLabel() }}</span>
+            @else<span class="ad-badge ad-badge--warning">{{ $payout->statusLabel() }}</span>@endif
+            @if ($payout->review_note)<small class="ad-sub">{{ $payout->review_note }}</small>@endif
+          </td>
+          <td data-label="Diproses"><span class="ad-text">{{ Format::date($payout->reviewed_at, 'd M Y, H:i') }}</span><small class="ad-sub">{{ $payout->reviewer?->name }}</small></td>
+        </tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
+  @endif
+</section>
+
+<div class="ad-grid-2">
+  <section class="ad-card">
     <header class="ad-card-head"><div><h2>Anggota tim</h2><p>{{ $tenant->teamMembers->count() }} anggota</p></div></header>
     @forelse ($tenant->teamMembers as $member)
     <div class="ad-list-row">

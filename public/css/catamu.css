@@ -223,7 +223,20 @@ textarea.field{min-height:90px;resize:vertical}
 .detail-media-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .detail-media{padding:12px;border-radius:12px;background:var(--surface-2)}
 .detail-media span{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}
-.detail-media img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.detail-media img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--line);cursor:zoom-in}
+body.pv-open{overflow:hidden}
+.photo-viewer{position:fixed;inset:0;z-index:400;display:flex;flex-direction:column;background:rgba(2,6,23,.94)}
+.photo-viewer[hidden]{display:none}
+.photo-viewer-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));color:#fff}
+.photo-viewer-title{min-width:0;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.photo-viewer-tools{display:flex;gap:8px;flex:0 0 auto}
+.photo-viewer-tools button{min-width:40px;height:40px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:18px;font-weight:700;line-height:1;cursor:pointer}
+.photo-viewer-tools button:hover{background:rgba(255,255,255,.22)}
+.photo-viewer-tools [data-pv="reset"]{min-width:54px;font-size:13px}
+.photo-viewer-stage{position:relative;flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:zoom-in}
+.photo-viewer-stage.is-zoomed{cursor:grab}
+.photo-viewer-stage img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;user-select:none;-webkit-user-drag:none;will-change:transform;background:#fff}
+.photo-viewer-hint{margin:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));text-align:center;color:rgba(255,255,255,.7);font-size:12px}
 label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px}
 .required{color:var(--danger)}
 .table-wrap{overflow:auto}

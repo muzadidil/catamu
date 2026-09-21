@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
+use App\Support\Affiliate;
 use App\Support\Subscriptions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -42,7 +43,7 @@ class TenantController extends Controller
 
         $tenants = $this->applyFilter(clone $base, self::FILTERS[$filter]['scope'])
             ->with(['owner', 'pendingPayment'])
-            ->withCount(['guests', 'teamMembers'])
+            ->withCount(['guests', 'teamMembers', 'referrals'])
             ->latest()
             ->paginate(20)
             ->withQueryString();
@@ -58,12 +59,19 @@ class TenantController extends Controller
 
     public function show(Tenant $tenant): View
     {
-        $tenant->load(['owner', 'pendingPayment', 'teamMembers', 'payments.reviewer', 'feedbacks.user'])
+        $tenant->load(['owner', 'pendingPayment', 'teamMembers', 'payments.reviewer', 'feedbacks.user', 'referrer'])
             ->loadCount(['guests', 'departments']);
 
         return view('admin.tenant-show', [
             'tenant' => $tenant,
             'settings' => $tenant->resolvedSettings(),
+            // Hanya membaca: kode referral sengaja tidak dibuat dari sini karena ini permintaan GET.
+            'affiliate' => [
+                'link' => $tenant->referral_code ? route('join', ['code' => $tenant->referral_code]) : null,
+                'balance' => Affiliate::balance($tenant),
+                'referrals' => $tenant->referrals()->with('pendingPayment')->latest('id')->get(),
+                'payouts' => $tenant->payoutRequests()->with('reviewer')->latest('id')->limit(30)->get(),
+            ],
             'usage' => [
                 'guestsMonth' => $tenant->guests()->where('check_in', '>=', now()->startOfMonth())->count(),
                 'guestsToday' => $tenant->guests()->where('check_in', '>=', today())->count(),

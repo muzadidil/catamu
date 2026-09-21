@@ -75,10 +75,16 @@
       </div>
       <div class="ad-topbar-actions">
         @yield('page-actions')
-        <button class="ad-theme-btn" type="button" data-theme-toggle title="Gunakan tema gelap" aria-label="Gunakan tema gelap">
-          @include('admin.partials.icon', ['name' => 'moon', 'class' => 'ad-icon--moon'])
-          @include('admin.partials.icon', ['name' => 'sun', 'class' => 'ad-icon--sun'])
-        </button>
+        <div class="ad-topbar-tools">
+          <form class="ad-topbar-logout" method="POST" action="{{ route('logout') }}" data-confirm data-confirm-title="Keluar dari backoffice?" data-confirm-message="Anda perlu masuk kembali dengan akun Google super admin." data-confirm-label="Keluar" data-confirm-variant="danger">
+            @csrf
+            <button class="ad-theme-btn ad-logout-btn" type="submit" title="Keluar" aria-label="Keluar">@include('admin.partials.icon', ['name' => 'logout'])</button>
+          </form>
+          <button class="ad-theme-btn" type="button" data-theme-toggle title="Gunakan tema gelap" aria-label="Gunakan tema gelap">
+            @include('admin.partials.icon', ['name' => 'moon', 'class' => 'ad-icon--moon'])
+            @include('admin.partials.icon', ['name' => 'sun', 'class' => 'ad-icon--sun'])
+          </button>
+        </div>
       </div>
     </header>
 

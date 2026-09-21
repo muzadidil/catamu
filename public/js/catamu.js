@@ -2443,6 +2443,163 @@
     $('detailModal').classList.add('show');
   }
 
+  /* ---------- Penampil foto dengan zoom ---------- */
+  // Dibuka dengan mengetuk foto atau tanda tangan di detail tamu.
+  const photoViewer=(()=>{
+    const MIN=1, MAX=6;
+    let root=null, stage=null, img=null, resetBtn=null;
+    let scale=1, tx=0, ty=0, moved=false, lastTap=0;
+    const pointers=new Map();
+    let pinch=null, pan=null;
+
+    function apply(){
+      img.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;
+      stage.classList.toggle('is-zoomed',scale>1);
+      resetBtn.textContent=`${Math.round(scale*10)/10}×`;
+    }
+
+    // Foto tidak boleh terseret keluar layar.
+    function limit(){
+      const mx=Math.max(0,(img.clientWidth*scale-stage.clientWidth)/2);
+      const my=Math.max(0,(img.clientHeight*scale-stage.clientHeight)/2);
+      tx=Math.min(mx,Math.max(-mx,tx));
+      ty=Math.min(my,Math.max(-my,ty));
+    }
+
+    function zoomTo(next,cx,cy){
+      next=Math.min(MAX,Math.max(MIN,next));
+      const rect=stage.getBoundingClientRect();
+      const px=(cx??rect.left+rect.width/2)-(rect.left+rect.width/2);
+      const py=(cy??rect.top+rect.height/2)-(rect.top+rect.height/2);
+      const ratio=next/scale;
+      tx=px-(px-tx)*ratio;
+      ty=py-(py-ty)*ratio;
+      scale=next;
+      if(scale===1){ tx=0; ty=0; }
+      limit();
+      apply();
+    }
+
+    const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+
+    function build(){
+      root=document.createElement('div');
+      root.className='photo-viewer';
+      root.hidden=true;
+      root.setAttribute('role','dialog');
+      root.setAttribute('aria-modal','true');
+      root.setAttribute('aria-label','Penampil foto');
+      root.innerHTML=`<div class="photo-viewer-bar"><strong class="photo-viewer-title"></strong><div class="photo-viewer-tools">
+        <button type="button" data-pv="out" aria-label="Perkecil">−</button>
+        <button type="button" data-pv="reset" aria-label="Ukuran asli">1×</button>
+        <button type="button" data-pv="in" aria-label="Perbesar">+</button>
+        <button type="button" data-pv="close" aria-label="Tutup">×</button></div></div>
+        <div class="photo-viewer-stage"><img alt="" draggable="false"></div>
+        <p class="photo-viewer-hint">Ketuk dua kali atau cubit untuk zoom, seret untuk menggeser.</p>`;
+      document.body.appendChild(root);
+      stage=root.querySelector('.photo-viewer-stage');
+      img=stage.querySelector('img');
+      resetBtn=root.querySelector('[data-pv="reset"]');
+
+      root.querySelector('.photo-viewer-tools').addEventListener('click',event=>{
+        const action=event.target.closest('[data-pv]')?.dataset.pv;
+        if(action==='close') close();
+        else if(action==='in') zoomTo(scale*1.5);
+        else if(action==='out') zoomTo(scale/1.5);
+        else if(action==='reset') zoomTo(1);
+      });
+
+      stage.addEventListener('wheel',event=>{
+        event.preventDefault();
+        zoomTo(scale*(event.deltaY<0?1.2:1/1.2),event.clientX,event.clientY);
+      },{passive:false});
+
+      stage.addEventListener('pointerdown',event=>{
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        try{ stage.setPointerCapture(event.pointerId); }catch{}
+        moved=false;
+        if(pointers.size===2){
+          const [a,b]=[...pointers.values()];
+          pinch={dist:distance(a,b),scale};
+          pan=null;
+          return;
+        }
+        pan={x:event.clientX,y:event.clientY,tx,ty};
+        const now=Date.now();
+        if(event.target===img && now-lastTap<300){
+          zoomTo(scale>1?1:2.5,event.clientX,event.clientY);
+          lastTap=0;
+        }else{
+          lastTap=now;
+        }
+      });
+
+      stage.addEventListener('pointermove',event=>{
+        if(!pointers.has(event.pointerId)) return;
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        if(pointers.size===2 && pinch){
+          const [a,b]=[...pointers.values()];
+          moved=true;
+          zoomTo(pinch.scale*distance(a,b)/pinch.dist,(a.x+b.x)/2,(a.y+b.y)/2);
+        }else if(pan && scale>1){
+          const dx=event.clientX-pan.x, dy=event.clientY-pan.y;
+          if(Math.abs(dx)+Math.abs(dy)>3) moved=true;
+          tx=pan.tx+dx; ty=pan.ty+dy;
+          limit();
+          apply();
+        }
+      });
+
+      const release=event=>{
+        pointers.delete(event.pointerId);
+        pinch=null;
+        const rest=[...pointers.values()][0];
+        pan=rest?{x:rest.x,y:rest.y,tx,ty}:null;
+      };
+      stage.addEventListener('pointerup',release);
+      stage.addEventListener('pointercancel',release);
+
+      // Ketuk area gelap di luar foto untuk menutup, kecuali baru saja menggeser.
+      stage.addEventListener('click',event=>{
+        if(event.target===stage && !moved && scale===1) close();
+      });
+
+      document.addEventListener('keydown',event=>{
+        if(root.hidden) return;
+        if(event.key==='Escape'){ event.stopImmediatePropagation(); close(); }
+        else if(event.key==='+'||event.key==='='){ zoomTo(scale*1.5); }
+        else if(event.key==='-'){ zoomTo(scale/1.5); }
+      },true);
+    }
+
+    function open(src,label){
+      if(!src) return;
+      if(!root) build();
+      root.querySelector('.photo-viewer-title').textContent=label||'Foto';
+      img.alt=label||'';
+      scale=1; tx=0; ty=0; pointers.clear(); pinch=null; pan=null;
+      img.src=src;
+      apply();
+      root.hidden=false;
+      document.body.classList.add('pv-open');
+      root.querySelector('[data-pv="close"]').focus();
+    }
+
+    function close(){
+      if(!root) return;
+      root.hidden=true;
+      img.removeAttribute('src');
+      document.body.classList.remove('pv-open');
+    }
+
+    return {open,close};
+  })();
+
+  document.addEventListener('click',event=>{
+    const image=event.target.closest('.detail-media img');
+    if(image) photoViewer.open(image.currentSrc||image.src,image.alt);
+  });
+
   function checkoutGuest(id){
     if(!guardCapability('guestsWrite','melakukan check-out tamu')) return;
     const g=guests.find(x=>x.id===id); if(!g||g.checkOut)return;
