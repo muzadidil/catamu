@@ -47,7 +47,7 @@
     </button>
     <button class="settings-item" type="button" data-setting-action="download-desktop">
       <span class="settings-item-icon"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10 5h4M11 18.5h2"/></svg></span>
-      <span class="settings-item-main"><span class="settings-item-text">Instal di HP</span><span class="settings-item-note">Pasang CATAMU di perangkat</span></span><span class="settings-item-arrow">›</span>
+      <span class="settings-item-main"><span class="settings-item-text">Instal di HP</span><span class="settings-item-note">Pasang adatamu.id di perangkat</span></span><span class="settings-item-arrow">›</span>
     </button>
   </div>
 

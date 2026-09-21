@@ -1,6 +1,6 @@
 @php
   $office = $settings['office'];
-  $initials = collect(preg_split('/\s+/', trim($office)))->filter()->take(2)->map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)))->implode('') ?: 'CA';
+  $initials = collect(preg_split('/\s+/', trim($office)))->filter()->take(2)->map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)))->implode('') ?: 'AD';
   $shortUrl = preg_replace('#^https?://#', '', $url);
 @endphp
 <!DOCTYPE html>
@@ -61,7 +61,7 @@
         <div class="step"><b>3</b><span>Tunggu, resepsionis segera menghubungi</span></div>
       </div>
     </div>
-    <div class="foot"><span>Terima kasih atas kunjungan Anda</span><span>Didukung <strong>CATAMU</strong></span></div>
+    <div class="foot"><span>Terima kasih atas kunjungan Anda</span><span>Didukung <strong>adatamu.id</strong></span></div>
   </div>
 </body>
 </html>

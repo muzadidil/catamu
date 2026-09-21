@@ -7,12 +7,12 @@
         <div class="qris-demo-wrap">
           @if ($state['platform']['qrisImageUrl'])
           <span class="qris-demo-badge">QRIS</span>
-          <div class="qris-demo-code has-image"><img src="{{ $state['platform']['qrisImageUrl'] }}" alt="Kode QRIS pembayaran CATAMU" /></div>
-          <p class="qris-demo-note">Scan QRIS di atas lalu kirim bukti pembayaran. Status menjadi Menunggu Verifikasi dan masa aktif bertambah setelah disetujui admin CATAMU.</p>
+          <div class="qris-demo-code has-image"><img src="{{ $state['platform']['qrisImageUrl'] }}" alt="Kode QRIS pembayaran adatamu.id" /></div>
+          <p class="qris-demo-note">Scan QRIS di atas lalu kirim bukti pembayaran. Status menjadi Menunggu Verifikasi dan masa aktif bertambah setelah disetujui admin adatamu.id.</p>
           @else
           <span class="qris-demo-badge">QRIS Belum Tersedia</span>
           <div class="qris-demo-code" role="img" aria-label="Ilustrasi QRIS"></div>
-          <p class="qris-demo-note">Gambar QRIS belum diatur oleh admin CATAMU. Hubungi admin untuk informasi pembayaran, lalu kirim bukti pembayaran di bawah.</p>
+          <p class="qris-demo-note">Gambar QRIS belum diatur oleh admin adatamu.id. Hubungi admin untuk informasi pembayaran, lalu kirim bukti pembayaran di bawah.</p>
           @endif
         </div>
         <div class="qris-proof-block">
@@ -26,7 +26,7 @@
             <button class="btn" type="button" id="removeQrisPaymentProofBtn" hidden>Hapus Foto</button>
           </div>
           <input type="file" id="qrisPaymentProofInput" accept="image/*" hidden />
-          <p class="qris-proof-note">Bukti pembayaran dikompresi, dikirim ke server, lalu diverifikasi oleh admin CATAMU. Maksimal file asli 5 MB.</p>
+          <p class="qris-proof-note">Bukti pembayaran dikompresi, dikirim ke server, lalu diverifikasi oleh admin adatamu.id. Maksimal file asli 5 MB.</p>
         </div>
       </div>
     </div>

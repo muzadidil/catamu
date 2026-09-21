@@ -36,8 +36,8 @@ class AppController extends Controller
         $scope = $tenant->appUrl().'/';
 
         return response()->json([
-            'name' => 'CATAMU - '.$tenant->officeName(),
-            'short_name' => 'CATAMU',
+            'name' => 'adatamu.id - '.$tenant->officeName(),
+            'short_name' => 'adatamu.id',
             'description' => 'Buku tamu digital '.$tenant->officeName(),
             'id' => $scope,
             'start_url' => $scope,

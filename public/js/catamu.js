@@ -632,7 +632,7 @@
     setTimeout(()=>target.classList.remove('entering'),260);
     els.headerTitle.textContent=pageMeta[page][0];
     els.headerSubtitle.textContent=pageMeta[page][1];
-    document.title=`${pageMeta[page][0]} • CATAMU`;
+    document.title=`${pageMeta[page][0]} • adatamu.id`;
     closeSidebar();
     if(page==='guests') renderGuests();
     if(page==='dashboard') renderDashboard();
@@ -693,7 +693,7 @@
     application:['Pengaturan Aplikasi','Identitas kantor dan preferensi tampilan.'],
     branding:['Logo & Halaman Login','Logo kantor dan gambar halaman login kantor.'],
     notifications:['Notifikasi','Atur notifikasi aplikasi dan perangkat.'],
-    'download-desktop':['Instal di HP','Pasang CATAMU di perangkat.'],
+    'download-desktop':['Instal di HP','Pasang adatamu.id di perangkat.'],
     contact:['Kontak Kami','Hubungi kontak kantor yang tersimpan pada aplikasi.'],
     feedback:['Masukan','Simpan saran, laporan masalah, atau ide pengembangan.'],
     rating:['Rating Aplikasi','Nilai pengalaman penggunaan aplikasi.'],
@@ -710,7 +710,7 @@
       menu.style.display='';
       els.headerTitle.textContent='Pengaturan';
       els.headerSubtitle.textContent='';
-      document.title='Pengaturan • CATAMU';
+      document.title='Pengaturan • adatamu.id';
       renderSettingsMenuNotes();
       applyAccessControl(true);
       return;
@@ -725,7 +725,7 @@
     const meta=settingViewMeta[view] || pageMeta.settings;
     els.headerTitle.textContent=meta[0];
     els.headerSubtitle.textContent=meta[1];
-    document.title=`${meta[0]} • CATAMU`;
+    document.title=`${meta[0]} • adatamu.id`;
 
     if(view==='subscription') renderSubscription();
     if(view==='affiliate') renderAffiliate();
@@ -846,7 +846,7 @@
   async function shareAffiliateLink(){
     if(!affiliateReady() || !navigator.share) return;
     try{
-      await navigator.share({title:'CATAMU — Buku Tamu Digital',text:'Kelola buku tamu kantor dengan CATAMU.',url:affiliate.link});
+      await navigator.share({title:'adatamu.id — Buku Tamu Digital',text:'Kelola buku tamu kantor dengan adatamu.id.',url:affiliate.link});
     }catch{ /* dibatalkan pengguna */ }
   }
 
@@ -916,7 +916,7 @@
 
     $('brandingSlideCountText').textContent=total
       ? `${total} slide aktif di halaman login kantor.`
-      : 'Belum ada slide. Halaman login memakai tampilan bawaan CATAMU.';
+      : 'Belum ada slide. Halaman login memakai tampilan bawaan adatamu.id.';
     $('brandingSlideAddBtn').disabled=total>=BRANDING_MAX_SLIDES;
 
     list.innerHTML='';
@@ -2047,7 +2047,7 @@
     const isEdit=!!$('editId').value;
     els.headerTitle.textContent=isEdit?'Edit Data Tamu':'Registrasi Tamu';
     els.headerSubtitle.textContent=isEdit?'Perbarui identitas dan keperluan kunjungan':'';
-    document.title=`${els.headerTitle.textContent} • CATAMU`;
+    document.title=`${els.headerTitle.textContent} • adatamu.id`;
   }
 
   function resetForm(){
@@ -2221,7 +2221,7 @@
       ctx.textAlign='center';
       ctx.fillStyle='#111827';
       ctx.font='900 28px Arial';
-      ctx.fillText('CATAMU',width/2,y); y+=30;
+      ctx.fillText('adatamu.id',width/2,y); y+=30;
       ctx.fillStyle='#dc2626';
       ctx.font='800 15px Arial';
       ctx.fillText('DETAIL TAMU',width/2,y); y+=22;
@@ -2285,7 +2285,7 @@
       ctx.textAlign='center';
       ctx.fillStyle='#6b7280'; ctx.font=smallFont;
       ctx.fillText('Dicetak: '+generatedAt,width/2,y); y+=14;
-      ctx.fillText('Dokumen dibuat dari CATAMU',width/2,y);
+      ctx.fillText('Dokumen dibuat dari adatamu.id',width/2,y);
       return canvasToPngBlob(canvas);
     }
 
@@ -2302,7 +2302,7 @@
     ctx.fillStyle='#991b1b';
     roundRect(ctx,cardX,cardY,cardW,180,30,true,false);
     ctx.fillStyle='#ffffff';
-    ctx.font='900 46px Arial'; ctx.fillText('CATAMU',cardX+48,cardY+38);
+    ctx.font='900 46px Arial'; ctx.fillText('adatamu.id',cardX+48,cardY+38);
     ctx.font='700 24px Arial'; ctx.fillText(settings.office||'Kantor',cardX+48,cardY+98);
     ctx.font='800 34px Arial'; ctx.textAlign='right'; ctx.fillText('DETAIL TAMU',cardX+cardW-48,cardY+56);
     ctx.font='600 18px Arial'; ctx.fillText(generatedAt,cardX+cardW-48,cardY+104);
@@ -2389,7 +2389,7 @@
     ctx.textAlign='left';
 
     ctx.fillStyle='#6b7280'; ctx.font='600 18px Arial'; ctx.textAlign='center';
-    ctx.fillText('Dokumen dibuat dari CATAMU • '+generatedAt,pageW/2,pageH-82);
+    ctx.fillText('Dokumen dibuat dari adatamu.id • '+generatedAt,pageW/2,pageH-82);
     return canvasToPngBlob(canvas);
   }
 
@@ -2406,7 +2406,7 @@
       const file=new File([blob],filename,{type:'image/png'});
       if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
         try{
-          await navigator.share({title:`Detail Tamu - ${guest.name}`,text:'Detail kunjungan dari CATAMU',files:[file]});
+          await navigator.share({title:`Detail Tamu - ${guest.name}`,text:'Detail kunjungan dari adatamu.id',files:[file]});
           toast(`PNG ${label} berhasil dibagikan.`);
           return;
         }catch(err){
@@ -2651,7 +2651,7 @@
   window.addEventListener('appinstalled',()=>{
     deferredInstallPrompt=null;
     renderPwaInstallState();
-    toast('CATAMU berhasil dipasang.');
+    toast('adatamu.id berhasil dipasang.');
   });
 
   $('installPwaBtn').addEventListener('click',installPwaApp);

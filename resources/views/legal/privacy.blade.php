@@ -1,11 +1,11 @@
 @extends('legal.layout')
 
-@section('title', 'Kebijakan Privasi • CATAMU')
+@section('title', 'Kebijakan Privasi • adatamu.id')
 @section('heading', 'Kebijakan Privasi')
 
 @section('legal')
 {{-- Draf ringkas berdasarkan fitur aplikasi. Tinjau bersama penasihat hukum sebelum dipublikasikan. --}}
-<p>CATAMU adalah aplikasi buku tamu digital untuk kantor. Halaman ini menjelaskan data yang diproses saat kantor dan anggota timnya menggunakan CATAMU.</p>
+<p>adatamu.id adalah aplikasi buku tamu digital untuk kantor. Halaman ini menjelaskan data yang diproses saat kantor dan anggota timnya menggunakan adatamu.id.</p>
 
 <h3>Data yang diproses</h3>
 <ul>
@@ -19,7 +19,7 @@
 <p>Data digunakan untuk menjalankan fitur buku tamu, mengatur hak akses tim, memverifikasi pembayaran langganan, dan meningkatkan layanan berdasarkan masukan pengguna.</p>
 
 <h3>Penyimpanan dan keamanan</h3>
-<p>Data disimpan di server CATAMU dan hanya dapat diakses oleh anggota kantor yang memiliki hak akses. Foto, tanda tangan, dan bukti pembayaran disimpan sebagai file privat yang tidak dapat dibuka tanpa login.</p>
+<p>Data disimpan di server adatamu.id dan hanya dapat diakses oleh anggota kantor yang memiliki hak akses. Foto, tanda tangan, dan bukti pembayaran disimpan sebagai file privat yang tidak dapat dibuka tanpa login.</p>
 
 <h3>Retensi dan penghapusan</h3>
 <p>Data disimpan selama akun kantor aktif. Owner dapat menghapus data tamu atau menghapus akun kantor beserta seluruh datanya melalui menu Pengaturan → Akun.</p>

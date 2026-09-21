@@ -12,5 +12,5 @@
       <div class="settings-card-foot"><button class="btn btn-primary" type="submit">Simpan Masukan</button></div>
     </form>
   </div>
-  <div class="settings-card"><div class="settings-card-head"><div><h3>Riwayat Masukan</h3><p>Masukan dikirim ke tim pengembang CATAMU.</p></div></div><div class="settings-card-body"><div class="feedback-list" id="feedbackList"></div></div></div>
+  <div class="settings-card"><div class="settings-card-head"><div><h3>Riwayat Masukan</h3><p>Masukan dikirim ke tim pengembang adatamu.id.</p></div></div><div class="settings-card-body"><div class="feedback-list" id="feedbackList"></div></div></div>
 </div>

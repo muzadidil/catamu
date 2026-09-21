@@ -18,7 +18,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <meta name="robots" content="noindex" />
-  <title>@yield('title') • Backoffice CATAMU</title>
+  <title>@yield('title') • Backoffice adatamu.id</title>
   <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,8 +29,8 @@
 <div class="ad-shell">
   <aside class="ad-sidebar" id="adSidebar">
     <a class="ad-brand" href="{{ route('admin.dashboard') }}">
-      <span class="ad-brand-mark">CA</span>
-      <span class="ad-brand-text"><b>CATAMU</b><small>Backoffice</small></span>
+      <span class="ad-brand-mark">AD</span>
+      <span class="ad-brand-text"><b>adatamu.id</b><small>Backoffice</small></span>
     </a>
 
     <nav class="ad-nav" aria-label="Menu backoffice">

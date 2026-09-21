@@ -3,7 +3,7 @@
 
 @section('title', 'Ringkasan')
 @section('page-title', 'Ringkasan')
-@section('page-subtitle', 'Kondisi seluruh kantor CATAMU per '.now()->translatedFormat('l, d F Y'))
+@section('page-subtitle', 'Kondisi seluruh kantor adatamu.id per '.now()->translatedFormat('l, d F Y'))
 @section('page-actions')
   <a class="ad-btn ad-btn--primary" href="{{ route('admin.payments') }}">@include('admin.partials.icon', ['name' => 'card'])<span>Verifikasi Pembayaran</span>@if ($stats['pending'])<em class="ad-btn-count">{{ $stats['pending'] }}</em>@endif</a>
 @endsection

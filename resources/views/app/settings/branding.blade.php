@@ -36,7 +36,7 @@
 
   <div class="settings-card">
     <div class="settings-card-head">
-      <div><h3>Gambar &amp; Teks Halaman Login</h3><p id="brandingSlideCountText">Belum ada slide. Halaman login memakai tampilan bawaan CATAMU.</p></div>
+      <div><h3>Gambar &amp; Teks Halaman Login</h3><p id="brandingSlideCountText">Belum ada slide. Halaman login memakai tampilan bawaan adatamu.id.</p></div>
       <button class="btn btn-primary" type="button" id="brandingSlideAddBtn">Tambah Slide</button>
     </div>
     <div class="settings-card-body">

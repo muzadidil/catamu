@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <meta name="robots" content="noindex" />
-  <title>Masuk • Backoffice CATAMU</title>
+  <title>Masuk • Backoffice adatamu.id</title>
   <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,8 +17,8 @@
 <main class="ad-auth">
   <div class="ad-auth-card">
     <span class="ad-brand ad-auth-brand">
-      <span class="ad-brand-mark">CA</span>
-      <span class="ad-brand-text"><b>CATAMU</b><small>Backoffice</small></span>
+      <span class="ad-brand-mark">AD</span>
+      <span class="ad-brand-text"><b>adatamu.id</b><small>Backoffice</small></span>
     </span>
 
     <h1>Masuk Super Admin</h1>

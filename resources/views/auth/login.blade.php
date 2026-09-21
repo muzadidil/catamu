@@ -1,6 +1,6 @@
 @extends('layouts.catamu')
 
-@section('title', 'Masuk • CATAMU')
+@section('title', 'Masuk • adatamu.id')
 @section('favicon', $branding['iconUrl'] ?? '')
 @if ($branding)
 @section('app-name', $branding['office'])
@@ -10,12 +10,12 @@
 @php
   $mode = old('mode', 'owner');
 
-  // Tanpa branding kantor, halaman ini memakai identitas CATAMU dan tiga slide
+  // Tanpa branding kantor, halaman ini memakai identitas adatamu.id dan tiga slide
   // bawaan yang gambarnya diatur lewat kelas .auth-slide-1..3 di CSS.
-  $brandName = $branding['office'] ?? 'CATAMU';
+  $brandName = $branding['office'] ?? 'adatamu.id';
   $brandTagline = $branding ? 'Buku Tamu Digital' : 'Buku Tamu Digital';
   $brandLogo = $branding['logoUrl'] ?? null;
-  $brandInitial = mb_strtoupper(mb_substr($branding ? $brandName : 'CATAMU', 0, 1));
+  $brandInitial = mb_strtoupper(mb_substr($branding ? $brandName : 'adatamu.id', 0, 1));
   $slides = collect($branding['slides'] ?? [])->filter(fn ($s) => $s['url'] || $s['title'] || $s['text'])->values();
   $useDefaultSlides = $slides->isEmpty();
   $defaultSlides = [
@@ -87,7 +87,7 @@
       @else
       <div class="lock-logo">{{ $brandInitial }}</div>
       @endif
-      <h2 id="lockOfficeName">{{ $branding ? 'Masuk ke '.$brandName : ($tenant ? $officeName : 'Masuk ke CATAMU') }}</h2>
+      <h2 id="lockOfficeName">{{ $branding ? 'Masuk ke '.$brandName : ($tenant ? $officeName : 'Masuk ke adatamu.id') }}</h2>
       <p id="lockMessage">{{ ! $branding && $tenant ? 'Sesi aplikasi dikunci. Pilih akun untuk masuk kembali.' : 'Pilih metode masuk untuk mengelola kunjungan kantor Anda' }}</p>
 
       @if ($inviter)
@@ -172,10 +172,10 @@
         <button type="submit" class="lock-switch-btn">Gunakan akun kantor lain</button>
       </form>
       @else
-      <p class="lock-switch-form"><a class="lock-switch-btn" href="{{ route('landing') }}">← Kembali ke beranda CATAMU</a></p>
+      <p class="lock-switch-form"><a class="lock-switch-btn" href="{{ route('landing') }}">← Kembali ke beranda adatamu.id</a></p>
       @endif
 
-      <p class="lock-foot">© {{ date('Y') }} CATAMU • Buku Tamu Digital &amp; Manajemen Kunjungan</p>
+      <p class="lock-foot">© {{ date('Y') }} adatamu.id • Buku Tamu Digital &amp; Manajemen Kunjungan</p>
     </div>
   </section>
 </div>
@@ -208,7 +208,7 @@
       $('unlockHelpLabel').textContent = 'Informasi Owner:';
       $('unlockHelp').textContent = hasPin
         ? 'Masukkan PIN Owner 4–6 digit, atau masuk ulang dengan akun Google Owner.'
-        : (locked ? 'Owner belum memiliki PIN. Masuk kembali dengan akun Google Owner.' : 'Gunakan akun Google terdaftar untuk mengelola kantor, tim, dan langganan CATAMU.');
+        : (locked ? 'Owner belum memiliki PIN. Masuk kembali dengan akun Google Owner.' : 'Gunakan akun Google terdaftar untuk mengelola kantor, tim, dan langganan adatamu.id.');
       if(hasPin) setTimeout(() => $('unlockPin')?.focus(), 50);
     }else if(mode === 'superadmin'){
       $('unlockHelpLabel').textContent = 'Sementara:';

@@ -32,7 +32,7 @@ class AuthController extends Controller
         return view('auth.login', [
             'tenant' => $tenant,
             'branding' => null,
-            'officeName' => $tenant?->officeName() ?? 'CATAMU',
+            'officeName' => $tenant?->officeName() ?? 'adatamu.id',
             'ownerHasPin' => (bool) $tenant?->owner?->pin,
             // SEMENTARA (lihat loginSuperAdminTemp): cuma tampil selama Google
             // OAuth belum diisi. Begitu GOOGLE_CLIENT_ID/SECRET terisi, opsi

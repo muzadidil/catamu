@@ -2,7 +2,7 @@
 
 @php
   $office = $settings['office'];
-  $initials = collect(preg_split('/\s+/', trim($office)))->filter()->take(2)->map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)))->implode('') ?: 'CA';
+  $initials = collect(preg_split('/\s+/', trim($office)))->filter()->take(2)->map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)))->implode('') ?: 'AD';
   $visible = fn ($key) => $fields[$key]['visible'] ?? true;
   $required = fn ($key) => ($fields[$key]['visible'] ?? true) && ($fields[$key]['required'] ?? false);
   $star = fn ($key) => $required($key) ? '<span class="required">*</span>' : '<span class="ck-optional">opsional</span>';
@@ -204,7 +204,7 @@
   </main>
 
   <footer class="ck-footer">
-    <a href="{{ route('landing') }}" target="_blank" rel="noopener"><span class="ck-footer-mark">CA</span>Didukung CATAMU</a>
+    <a href="{{ route('landing') }}" target="_blank" rel="noopener"><span class="ck-footer-mark">AD</span>Didukung adatamu.id</a>
     <span>•</span>
     <a href="{{ route('legal.privacy') }}" target="_blank" rel="noopener">Kebijakan Privasi</a>
   </footer>

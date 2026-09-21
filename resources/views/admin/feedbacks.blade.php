@@ -6,7 +6,7 @@
 
 @section('title', 'Masukan & Rating')
 @section('page-title', 'Masukan & Rating')
-@section('page-subtitle', 'Suara pengguna untuk pengembangan CATAMU')
+@section('page-subtitle', 'Suara pengguna untuk pengembangan adatamu.id')
 
 @section('content')
 <div class="ad-grid-rating">

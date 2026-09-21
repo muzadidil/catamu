@@ -3,7 +3,7 @@
 <div id="settingsAffiliateView" class="settings-subview">
   <div class="settings-subview-head">
     <button class="icon-btn" type="button" data-setting-back aria-label="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
-    <div><p>Ajak kantor lain memakai CATAMU dan dapatkan komisi dari setiap pembayaran mereka.</p></div>
+    <div><p>Ajak kantor lain memakai adatamu.id dan dapatkan komisi dari setiap pembayaran mereka.</p></div>
   </div>
 
   <div class="setting-summary">

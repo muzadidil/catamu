@@ -13,11 +13,11 @@
   @php ($faviconUrl = trim($__env->yieldContent('favicon')) ?: asset('icon-192.png'))
   <link rel="icon" type="image/png" href="{{ $faviconUrl }}" />
   <link rel="apple-touch-icon" href="{{ $faviconUrl }}" />
-  <meta name="application-name" content="@yield('app-name', 'CATAMU')" />
+  <meta name="application-name" content="@yield('app-name', 'adatamu.id')" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="@yield('app-name', 'CATAMU')" />
+  <meta name="apple-mobile-web-app-title" content="@yield('app-name', 'adatamu.id')" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <title>@yield('title', 'CATAMU')</title>
+  <title>@yield('title', 'adatamu.id')</title>
   @stack('meta')
   <link rel="stylesheet" href="{{ asset('css/catamu.css') }}?v={{ filemtime(public_path('css/catamu.css')) }}" />
   @stack('styles')

@@ -10,9 +10,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#b91c1c" />
-  <title>CATAMU — Buku Tamu Digital untuk Kantor</title>
-  <meta name="description" content="CATAMU mencatat tamu kantor lengkap dengan foto, tanda tangan, dan notifikasi real-time. Cek-in mandiri lewat QR, kelola tim, dan laporan siap cetak. Coba gratis {{ $trialDays }} hari." />
-  <meta property="og:title" content="CATAMU — Buku Tamu Digital untuk Kantor" />
+  <title>adatamu.id — Buku Tamu Digital untuk Kantor</title>
+  <meta name="description" content="adatamu.id mencatat tamu kantor lengkap dengan foto, tanda tangan, dan notifikasi real-time. Cek-in mandiri lewat QR, kelola tim, dan laporan siap cetak. Coba gratis {{ $trialDays }} hari." />
+  <meta property="og:title" content="adatamu.id — Buku Tamu Digital untuk Kantor" />
   <meta property="og:description" content="Catat tamu kantor dalam hitungan detik: foto, tanda tangan, cek-in mandiri via QR, dan notifikasi real-time." />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
@@ -28,9 +28,9 @@
 
 <header class="site-header" id="siteHeader">
   <div class="container header-inner">
-    <a class="brand" href="{{ route('landing') }}" aria-label="CATAMU beranda">
-      <span class="brand-mark">CA</span>
-      <span class="brand-name">CATAMU</span>
+    <a class="brand" href="{{ route('landing') }}" aria-label="adatamu.id beranda">
+      <span class="brand-mark">AD</span>
+      <span class="brand-name">adatamu.id</span>
     </a>
     <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
       <a href="#fitur">Fitur</a>
@@ -69,7 +69,7 @@
       <div class="hero-copy reveal">
         <span class="eyebrow"><span class="eyebrow-dot"></span>Buku tamu digital untuk kantor Indonesia</span>
         <h1>Catat setiap tamu kantor dalam <span class="text-accent">hitungan detik.</span></h1>
-        <p class="lead">Tinggalkan buku tamu kertas. CATAMU mencatat identitas, foto, tanda tangan, dan tujuan kunjungan — lalu mengabari tim Anda secara real-time.</p>
+        <p class="lead">Tinggalkan buku tamu kertas. adatamu.id mencatat identitas, foto, tanda tangan, dan tujuan kunjungan — lalu mengabari tim Anda secara real-time.</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" href="{{ $dashboardUrl ?? $loginUrl }}">
             {{ $dashboardUrl ? 'Buka Aplikasi' : 'Mulai Trial Gratis' }}
@@ -89,7 +89,7 @@
           <div class="mock-bar"><span></span><span></span><span></span><div class="mock-url">{{ $cekinHost }}/kantor-anda/app</div></div>
           <div class="mock-app">
             <div class="mock-side">
-              <div class="mock-logo">CA</div>
+              <div class="mock-logo">AD</div>
               <i class="active"></i><i></i><i></i><i></i>
             </div>
             <div class="mock-main">
@@ -111,7 +111,7 @@
         <div class="mock-phone">
           <div class="mock-phone-notch"></div>
           <div class="mock-phone-screen">
-            <div class="mock-phone-head"><span class="brand-mark sm">CA</span><div><b>PT Kantor Anda</b><small>Cek-in Tamu</small></div></div>
+            <div class="mock-phone-head"><span class="brand-mark sm">AD</span><div><b>PT Kantor Anda</b><small>Cek-in Tamu</small></div></div>
             <div class="mock-field"><small>Nama Lengkap</small><span>Rina Wulandari</span></div>
             <div class="mock-field"><small>Bertemu</small><span>Marketing</span></div>
             <div class="mock-field"><small>Keperluan</small><span>Presentasi produk</span></div>
@@ -180,7 +180,7 @@
         <article class="feature-card reveal">
           <span class="feature-icon"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10 5h4M11 18.5h2"/></svg></span>
           <h3>Terpasang di HP</h3>
-          <p>Pasang CATAMU di layar utama HP atau tablet resepsionis dan gunakan seperti aplikasi biasa.</p>
+          <p>Pasang adatamu.id di layar utama HP atau tablet resepsionis dan gunakan seperti aplikasi biasa.</p>
         </article>
       </div>
     </div>
@@ -205,7 +205,7 @@
       </div>
       <div class="poster-mock reveal" aria-hidden="true">
         <div class="poster-card">
-          <span class="brand-mark">CA</span>
+          <span class="brand-mark">AD</span>
           <b>PT Kantor Anda</b>
           <small>Selamat datang! Silakan cek-in</small>
           <div class="poster-qr">
@@ -270,7 +270,7 @@
       <div class="section-head reveal">
         <span class="kicker">Harga</span>
         <h2>Satu harga, semua fitur</h2>
-        <p>Coba dulu tanpa biaya. Lanjutkan berlangganan hanya jika CATAMU cocok untuk kantor Anda.</p>
+        <p>Coba dulu tanpa biaya. Lanjutkan berlangganan hanya jika adatamu.id cocok untuk kantor Anda.</p>
       </div>
       <div class="pricing">
         <div class="price-card reveal">
@@ -317,7 +317,7 @@
         </details>
         <details class="faq-item reveal">
           <summary>Bagaimana cara membayar langganan?</summary>
-          <p>Buka Pengaturan → Berlangganan, scan QRIS, lalu unggah bukti pembayaran. Masa aktif bertambah setelah pembayaran diverifikasi tim CATAMU.</p>
+          <p>Buka Pengaturan → Berlangganan, scan QRIS, lalu unggah bukti pembayaran. Masa aktif bertambah setelah pembayaran diverifikasi tim adatamu.id.</p>
         </details>
         <details class="faq-item reveal">
           <summary>Apakah tamu perlu memasang aplikasi untuk cek-in mandiri?</summary>
@@ -333,7 +333,7 @@
         </details>
         <details class="faq-item reveal">
           <summary>Apakah bisa dipakai di HP atau tablet?</summary>
-          <p>Bisa. Tampilan CATAMU menyesuaikan layar HP dan tablet, dan dapat dipasang di layar utama seperti aplikasi.</p>
+          <p>Bisa. Tampilan adatamu.id menyesuaikan layar HP dan tablet, dan dapat dipasang di layar utama seperti aplikasi.</p>
         </details>
       </div>
     </div>
@@ -346,7 +346,7 @@
         <h2>Siap merapikan buku tamu kantor Anda?</h2>
         <p>Mulai gratis {{ $trialDays }} hari. Kantor Anda siap dalam beberapa menit.</p>
       </div>
-      <a class="btn btn-light btn-lg" href="{{ $dashboardUrl ?? $loginUrl }}">{{ $dashboardUrl ? 'Buka Aplikasi' : 'Coba CATAMU Gratis' }}</a>
+      <a class="btn btn-light btn-lg" href="{{ $dashboardUrl ?? $loginUrl }}">{{ $dashboardUrl ? 'Buka Aplikasi' : 'Coba adatamu.id Gratis' }}</a>
     </div>
   </section>
 </main>
@@ -354,7 +354,7 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="brand" href="{{ route('landing') }}"><span class="brand-mark">CA</span><span class="brand-name">CATAMU</span></a>
+      <a class="brand" href="{{ route('landing') }}"><span class="brand-mark">AD</span><span class="brand-name">adatamu.id</span></a>
       <p>Buku tamu digital untuk kantor modern. Catat, pantau, dan laporkan kunjungan tamu dengan mudah.</p>
     </div>
     <div class="footer-links">
@@ -371,7 +371,7 @@
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© {{ now()->year }} CATAMU. Hak cipta dilindungi.</span>
+    <span>© {{ now()->year }} adatamu.id. Hak cipta dilindungi.</span>
     <span>Dibuat untuk resepsionis Indonesia.</span>
   </div>
 </footer>

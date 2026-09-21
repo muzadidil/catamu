@@ -3,7 +3,7 @@
   <div class="settings-card">
     <div class="settings-card-body">
       <div class="legal-block"><h4>Kebijakan Privasi</h4><p>Penjelasan lengkap mengenai data yang diproses, tujuan penggunaan, penyimpanan di server, keamanan, retensi, penghapusan data, dan hak pengguna.</p><div class="legal-actions"><a class="btn btn-primary" href="{{ route('legal.privacy') }}" target="_blank" rel="noopener">Baca Kebijakan Privasi</a></div></div>
-      <div class="legal-block"><h4>Syarat &amp; Ketentuan</h4><p>Ketentuan penggunaan CATAMU, tanggung jawab pengguna, langganan, layanan PWA, dan penghapusan data.</p><div class="legal-actions"><a class="btn" href="{{ route('legal.terms') }}" target="_blank" rel="noopener">Baca Syarat &amp; Ketentuan</a></div></div>
+      <div class="legal-block"><h4>Syarat &amp; Ketentuan</h4><p>Ketentuan penggunaan adatamu.id, tanggung jawab pengguna, langganan, layanan PWA, dan penghapusan data.</p><div class="legal-actions"><a class="btn" href="{{ route('legal.terms') }}" target="_blank" rel="noopener">Baca Syarat &amp; Ketentuan</a></div></div>
     </div>
   </div>
 </div>

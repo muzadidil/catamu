@@ -4,10 +4,10 @@
     @if ($brandLogoUrl)
     <div class="brand-logo brand-logo-img"><img src="{{ $brandLogoUrl }}" alt="Logo {{ $tenant->officeName() }}" /></div>
     @else
-    <div class="brand-logo">CA</div>
+    <div class="brand-logo">AD</div>
     @endif
     <div>
-      <h1>CATAMU</h1>
+      <h1>adatamu.id</h1>
       <small id="brandOffice">Kantor Utama</small>
     </div>
   </div>
