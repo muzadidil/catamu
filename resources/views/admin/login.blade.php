@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <meta name="robots" content="noindex" />
+  @include('admin.partials.theme-init')
   <title>Masuk • Backoffice adatamu.id</title>
   <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />

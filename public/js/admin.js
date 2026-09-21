@@ -82,6 +82,28 @@
     if(event.target.closest('[data-lightbox-close]') || event.target === lightbox) lightbox.close();
   });
 
+  /* ---------- Tema terang / gelap ---------- */
+  const themeRoot = document.documentElement;
+  const themeButton = document.querySelector('[data-theme-toggle]');
+  const systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const savedTheme = () => {
+    try{ const value = localStorage.getItem('adTheme'); return value === 'light' || value === 'dark' ? value : null; }catch{ return null; }
+  };
+  function applyTheme(theme){
+    themeRoot.setAttribute('data-theme', theme);
+    if(!themeButton) return;
+    const label = theme === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap';
+    themeButton.setAttribute('aria-label', label);
+    themeButton.title = label;
+  }
+  applyTheme(themeRoot.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  themeButton?.addEventListener('click', () => {
+    const next = themeRoot.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem('adTheme', next); }catch{}
+  });
+  systemDark?.addEventListener?.('change', event => { if(!savedTheme()) applyTheme(event.matches ? 'dark' : 'light'); });
+
   /* ---------- Pengaturan trial ---------- */
   const trialInput = document.querySelector('[data-trial-input]');
   const trialPreview = document.querySelector('[data-trial-preview]');

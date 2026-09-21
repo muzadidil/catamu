@@ -273,8 +273,41 @@
     };
   }
 
+  /* ---------- Bunyi konfirmasi ---------- */
+  // Browser hanya mengizinkan bunyi setelah interaksi pengguna, jadi konteks audio
+  // dibuka saat tombol Kirim ditekan dan nadanya baru dimainkan setelah server membalas.
+  let audioCtx = null;
+  function unlockAudio(){
+    try{
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if(!AudioCtor) return;
+      audioCtx ??= new AudioCtor();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+    }catch{}
+  }
+
+  function playSuccessChime(){
+    if(!audioCtx || audioCtx.state === 'closed') return;
+    const begin = audioCtx.currentTime + .03;
+    [[659.25, 0], [880, .13], [1318.51, .27]].forEach(([frequency, offset]) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const at = begin + offset;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(frequency, at);
+      gain.gain.setValueAtTime(.0001, at);
+      gain.gain.exponentialRampToValueAtTime(.2, at + .02);
+      gain.gain.exponentialRampToValueAtTime(.0001, at + .6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(at);
+      osc.stop(at + .65);
+    });
+  }
+
   let countdownTimer = 0;
   function showSuccess(name){
+    playSuccessChime();
     stopCamera();
     $('toast').classList.remove('show');
     $('ckFormCard').hidden = true;
@@ -311,6 +344,7 @@
     event.preventDefault();
     const button = $('ckSubmit');
     if(button.getAttribute('aria-busy') === 'true') return;
+    unlockAudio();
     form.querySelectorAll('.has-error').forEach(clearError);
     if(!validate()) return;
 
