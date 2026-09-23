@@ -56,6 +56,20 @@ class TenantBranding
         return $path ? route('media.branding.icon', ['slug' => $tenant->slug, 'size' => $size, 'v' => self::version($path)]) : null;
     }
 
+    /**
+     * Ikon bawaan adatamu.id, dipakai selama kantor belum mengunggah logo.
+     *
+     * Penanda versinya diambil dari waktu ubah berkas, seperti css/js di Blade.
+     * Tanpa itu alamatnya tidak pernah berganti, jadi CDN dan browser tetap
+     * menyajikan logo lama berhari-hari setelah logonya diganti.
+     */
+    public static function defaultIconUrl(int $size = 192): string
+    {
+        $file = 'icon-'.($size >= 512 ? 512 : 192).'.png';
+
+        return asset($file).'?v='.filemtime(public_path($file));
+    }
+
     public static function save(Tenant $tenant, array $branding): array
     {
         $normalized = self::normalize($branding);

@@ -53,8 +53,8 @@ class AppController extends Controller
                 ['src' => TenantBranding::iconUrl($tenant, 192), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any'],
                 ['src' => TenantBranding::iconUrl($tenant, 512), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any'],
             ] : [
-                ['src' => asset('icon-192.png'), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
-                ['src' => asset('icon-512.png'), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+                ['src' => TenantBranding::defaultIconUrl(192), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
+                ['src' => TenantBranding::defaultIconUrl(512), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
             ],
         ], 200, ['Content-Type' => 'application/manifest+json'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }

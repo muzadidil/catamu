@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex" />
   @include('admin.partials.theme-init')
   <title>Masuk • Backoffice adatamu.id</title>
-  <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
+  <link rel="icon" type="image/png" href="{{ \App\Support\TenantBranding::defaultIconUrl() }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />

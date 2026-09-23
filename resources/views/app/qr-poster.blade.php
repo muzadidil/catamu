@@ -9,7 +9,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Poster QR Cek-in • {{ $office }}</title>
-  <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
+  <link rel="icon" type="image/png" href="{{ \App\Support\TenantBranding::defaultIconUrl() }}" />
   <style>
     @page{size:A4;margin:0}
     *{box-sizing:border-box}

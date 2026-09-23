@@ -15,8 +15,8 @@
   <meta property="og:title" content="adatamu.id — Buku Tamu Digital untuk Kantor" />
   <meta property="og:description" content="Catat tamu kantor dalam hitungan detik: foto, tanda tangan, cek-in mandiri via QR, dan notifikasi real-time." />
   <meta property="og:type" content="website" />
-  <link rel="icon" type="image/png" href="{{ asset('icon-192.png') }}" />
-  <link rel="apple-touch-icon" href="{{ asset('icon-192.png') }}" />
+  <link rel="icon" type="image/png" href="{{ \App\Support\TenantBranding::defaultIconUrl() }}" />
+  <link rel="apple-touch-icon" href="{{ \App\Support\TenantBranding::defaultIconUrl() }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />

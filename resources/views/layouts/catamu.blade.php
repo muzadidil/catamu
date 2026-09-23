@@ -10,7 +10,7 @@
   <link rel="manifest" href="@yield('manifest')" />
   @endif
   {{-- Halaman bertenant menimpa ini dengan logo kantor lewat @section('favicon'). --}}
-  @php ($faviconUrl = trim($__env->yieldContent('favicon')) ?: asset('icon-192.png'))
+  @php ($faviconUrl = trim($__env->yieldContent('favicon')) ?: \App\Support\TenantBranding::defaultIconUrl())
   <link rel="icon" type="image/png" href="{{ $faviconUrl }}" />
   <link rel="apple-touch-icon" href="{{ $faviconUrl }}" />
   <meta name="application-name" content="@yield('app-name', 'adatamu.id')" />
